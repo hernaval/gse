@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html >
+<head>
+<meta charset="utf-8"/>
+<title>Insert title here</title>
+<script src="js/assets/jquery-3.1.0.js">  </script>
+</head>
+<body>
+		<div class='modal fade' id=''>
+				<div class='modal-dialog' role='document'>
+					<div class='modal-content'>
+		
+						<div class='modal-header'>
+							<h5 class='modal-title'>
+								Modification N° <span ></span>
+							</h5>
+							<button type='button' class='close' data-dismisss='modal' aria-label='Close'>
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+		
+						<div class='modal-body'>
+		
+							<form action='/dash/activites/modification' method='post'>
+								<div class="container text-left">
+											
+										<div class="row">
+										
+										</div>
+											<div class="form-group">
+												<label class="control-label"></label> <input
+													class="form-control-sm" th:attr="value=${activite.code_act}"  type="hidden" name="code_act" />
+											</div>
+
+											
+											<div class="form-group">
+												<label class="control-label">Description</label>
+												<textarea class="form-control" th:text="${activite.object_act}" name="object_act"></textarea>
+											</div>
+
+											<div class="form-group">
+												Type de Demande <select class="form-control"
+													name="type_dmd">
+													<option value="requête">Requête(REQ)</option>
+													<option value="projet">Projet</option>
+													<option value="chantier">Chantier</option>
+												</select>
+											</div>
+
+											
+											<div class="form-group">
+												Caractéristique <select class="form-control"
+													name="caract_act">
+													<option value="n">Nouveau</option>
+													<option value="m">Modif</option>
+													<option value="r">Répétitif</option>
+												</select>
+											</div>
+
+											<div id="selectDir" class="form-group">
+												Direction <select class="form-control" name="direction">
+													<option value="org">ORG</option>
+													<option value="cmd">CMD</option>
+												</select>
+											</div>
+												
+											 <input class="form-control-sm" th:attr="value=${activite.date_act}" type="hidden" name="date_act" />
+												
+											<input class="form-control-sm" th:attr="value=${activite.etat_act}" type="hidden" name="etat_act" />
+											<input class="form-control-sm" th:attr="value=${activite.responsable.getCode_resp()}" type="hidden" name="responsable" />
+
+											<div class="form-group">
+												<label class="control-label">Date de Livraison</label> <input
+													class="form-control-sm" th:attr="value=${activite.data_liv_act}" type="date" name="data_liv_act" />
+											</div>
+
+											
+											<div class="form-group">
+												<label class="control-label">Observation</label>
+												<textarea class="form-control" th:text="${activite.obs_act}"  name="obs_act"> </textarea>
+											</div>
+
+											
+
+									</div>
+
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary"
+											data-dismiss="modal">Annuler</button>
+										<button id="btnEdit" class="btn-success">Enregistrer</button>
+										
+										<script>
+											/*$(document).ready(function(){
+												$('#btnEdit').click(function(){
+													$('#form1').submit((e)=>{
+														e.preventDefault()
+														console.log('haha')
+													})
+												})
+											})*/
+										</script>
+									
+										
+									</div>
+							</form>
+		
+						</div>
+		
+					</div>
+				</div>
+			</div>
+</body>
+</html>

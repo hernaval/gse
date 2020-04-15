@@ -1,0 +1,141 @@
+
+<head>
+<meta charset="utf-8">
+</head>
+<div th:fragment="modal">
+<!-- Modal edit -->
+<div  class="modal fade" th:attr="id=${inc.code_inc}" tabindex="-1"
+	role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header pers-header">
+				<h5 class="modal-title" id="exampleModalLabel">
+					<i class='fas fa-edit text-info'></i> Modification N° <span class="text-danger" th:text=${inc.code_inc}></span>
+				</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+
+				<form id="form1" th:action="@{/gse/incidents/modification}" method="post">
+
+					<div class="container text-left">
+
+						<div class="row"></div>
+						<div class="form-group">
+							<label class="control-label"></label> <input
+								class="form-control-sm" th:attr="value=${inc.code_inc}"
+								type="hidden" name="code_inc" />
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Description</label> <input
+								class="form-control" th:attr="value=${inc.desc_inc}" type="text"
+								name="desc_inc" />
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Cause</label> <input
+								class="form-control" th:attr="value=${inc.cause_inc}"
+								type="text" name="cause_inc" />
+						</div>
+
+						<h5>Sujet concerné</h5>
+						<div class="row m-2">
+							<div class="form-group">
+								<input class="form-control-sm" type="checkbox" value="metier"
+									th:attr="checked = checked" name="util_imp_inc" /> <label
+									class="control-label">Métier</label>
+							</div>
+
+							<div class="form-group">
+								<input class="form-control-sm" type="checkbox" value="agence"
+									name="utli_imp_inc" /> <label class="control-label">Agence</label>
+							</div>
+
+							<div class="form-group">
+								<input class="form-control-sm" type="checkbox" value="client"
+									name="util_imp_inc" /> <label class="control-label">Client</label>
+							</div>
+						</div>
+
+						<h5>Application impactée</h5>
+						<div id="application" class="row m-2">
+							<!-- initialisté en javascript js/applications/init.js -->
+						</div>
+
+
+						<div class="form-group">
+							<label class="control-label">Date début </label> <input
+								id="dateDebut" th:attr="value=${inc.date_deb_inc}"
+								class="form-control-sm" type="date" name="date_deb_inc" /> <span
+								class="text-danger" id="date_err"></span>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Heure début</label> <input
+								class="form-control-sm" th:attr="value=${inc.heure_deb_inc}"
+								type="time" name="heure_deb_inc" />
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Date fin </label> <input
+								id="dateFin" th:attr="value=${inc.date_fin_inc}"
+								class="form-control-sm" type="date" name="date_fin_inc" />
+						</div>
+
+
+						<div class="form-group">
+							<label class="control-label">Heure fin</label> <input
+								class="form-control-sm" th:attr="value=${inc.heure_fin_inc}"
+								type="time" name="heure_fin_inc" />
+						</div>
+
+						<div  class="form-group">
+							<label class="control-label">Valeur</label> <input
+								id="perte_value"  th:attr="value=${inc.perte_interne}"
+								class="form-control" type="text" name="perte_interne" /> <span
+								class="text-danger" id="number_validation"></span>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Conséquence</label> <input
+								class="form-control" th:attr="value=${inc.consequence_inc}"
+								type="text" name="consequence_inc" />
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Sous catégorie de risque</label> <input
+								th:attr="value=${inc.sous_cat_risk}" class="form-control"
+								type="text" name="sous_cat_risk" />
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label">Résumé du plan d'action</label> <input
+								th:attr="value=${inc.echeance}" class="form-control"
+								type="text" name="echeance" />
+						</div>
+
+
+
+					</div>
+
+					<div class="modal-footer pers-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Annuler</button>
+						<button id="btnEdit" class="btn-success">Enregistrer</button>
+
+					
+
+					</div>
+				</form>
+			</div>
+
+
+		</div>
+	</div>
+</div>
+<!--  Modal edit -->
+</div>

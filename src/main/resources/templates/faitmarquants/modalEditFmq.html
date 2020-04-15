@@ -1,0 +1,67 @@
+
+<head>
+<meta charset="utf-8" />
+</head>
+
+<div th:fragment="modal">
+
+	<div class="modal fade" th:attr="id=${fmq.code_fmq}" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header pers-header">
+					<h5 class="modal-title" id="exampleModalLabel">
+						Modification N° <span class="text-danger" th:text=${fmq.code_fmq}></span>
+					</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+
+					<form id="form1" th:action="@{/gse/faitmarquants/modification}"
+						method="post">
+
+						<div class="container text-left">
+
+							<div class="row"></div>
+							<div class="form-group">
+								<label class="control-label"></label> <input
+									class="form-control-sm" th:attr="value=${fmq.code_fmq}"
+									type="hidden" name="code_fmq" />
+							</div>
+						
+
+							<div class="form-group">
+								<label class="control-label">Description du fait</label> <input
+									class="form-control" th:attr="value=${fmq.desc_fmq}" type="text" name="desc_fmq" />
+							</div>
+
+
+							<div class="form-group">
+								<label class="control-label">Date de mise en production</label>
+								<input class="form-control" th:attr="value=${fmq.date_prod_fmq}" type="date" name="date_prod_fmq" />
+							</div>
+							
+							<input class="form-control" th:attr="value=${fmq.activite.getCode_act()}" type="hidden" name="activite" />
+						
+						</div>
+
+						<div class="modal-footer pers-footer">
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Annuler</button>
+							<button id="btnEdit" type="submit" class="btn-success">Enregistrer</button>
+
+					
+
+						</div>
+					</form>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+	<!--  Modal edit -->
+</div>

@@ -1,0 +1,39 @@
+
+<head>
+<meta charset="utf-8"/>
+</head>
+
+
+<div th:fragment="init">
+	<script>
+	/**
+	 * 
+	 */
+	$(document).ready(function(){
+		getDirection()
+	})
+
+	function getDirection(){
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/directions/getAll}]]",
+			dataType : "json",
+			contentType : "application/json",
+			success : function (data){
+				var res = "Direction / Service Demandeur<select class='form-control' name='direction'> "
+				
+				for(i=0;i<data.length;i++){
+					res += "<option value='"+data[i].code_dir+"'>"+data[i].code_dir.toUpperCase()+"</option> "
+				}
+				res +="</select>"
+				
+					//console.log(res)
+				$('[id=selectDir]').html(res)
+				$('[id=selectDir2]').html(res)
+				
+				
+			}
+		})
+	}
+	</script>
+</div>

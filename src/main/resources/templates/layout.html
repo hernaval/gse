@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="utf-8" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<title>GESTION SUIVI</title>
+
+</head>
+
+<body>
+
+
+	<div class="loader">
+
+	</div>
+
+	<!--top navbar-->
+	<div class="hidden" id='page'> <!-- content -->
+	<nav class="navbar navbar-expand-lg navbar-light top-menu ">
+
+		<a href="#" class="navbar-brand text-white">  
+			<img height="45" th:src="@{/images/logoo.png}"
+			 class="img-responsive ml-2" alt="" />
+			<span   >Gestion Suivi et Etude</span>
+		</a>
+		<button class="navbar-toggler" data-toggle="collapse"
+			data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false">
+			<span class="navbar-toggler-icon "></span>
+		</button>
+
+		
+		<div class="collapse navbar-collapse " id="navbarSupportedContent">
+			<ul class="navbar-nav  ml-auto ">
+
+
+				<li class="nav-item dropdown"><a href="#"
+					class="nav-link dropdown-toggle " id="navbarDropdown" role="button"
+					data-toggle="dropdown"> <span class="text-white mr-1"
+						th:text="${session.user}"></span><i
+						class=" text-white  far fa-user-circle"></i>
+				</a>
+					<div class="dropdown-menu dropdown"
+						aria-labelledby="navbarDropdown">
+						<a href="#" class="dropdown-item">Profile</a> <a href="#"
+							class="dropdown-item">Setting</a>
+						<div class="dropdown-divider"></div>
+
+
+						<button class="dropdown-item" id="btnLogout">Logout</button>
+						<!--modal logout-->
+						
+						<!--modal logout-->
+					</div></li>
+			</ul>
+
+		</div>
+
+	</nav>
+
+	<!-- top navbar end-->
+
+
+	<!--sidebar-->
+
+	<div class="container-fluid">
+		<div class="row">
+
+			<div class=" sidebar col-lg-2 ">
+				<a href="#" class="navbrand text-dark ml-5 mb-3 text-center">
+					Hernaval </a>
+				<ul class="navbar-nav flew-column">
+					<li class="nav-item"><a
+						class="nav-link text-center p-3 mb-3 ml-2 "> </a></li>
+					<li class="nav-item siderbar-link "><a th:href="@{/gse/activites}"
+						class="nav-link p-2 mb-3 ml-1  d-flex justify-content-between  ">
+							<i class="fa fa-laptop "></i> Activites <i
+							class="fa fa-arrow-circle-down ml-auto "></i>
+					</a></li>
+					<li class="nav-item siderbar-link  "><a th:href="@{/gse/incidents}"
+						class="nav-link p-2 mb-3 ml-1   "> <i
+							class="fas fa-exclamation-triangle"></i> Incidents
+					</a></li>
+
+					<li class="nav-item  siderbar-link "><a th:href="@{/gse/dims}"
+						class="nav-link p-2 mb-3 ml-1   "> <i
+							class="fa fa-wrench"></i> Dim
+					</a></li>
+
+					<li class="nav-item siderbar-link"><a th:href="@{/gse/faitmarquants}"
+						class="nav-link p-2 mb-3 ml-1    "> <i
+							class="fa fa-check"></i> Faits Marquants
+					</a></li>
+
+					<li class="nav-item siderbar-link"><a th:href="@{/gse/requetes}"
+						class="nav-link p-2 mb-3 ml-1    "> <i
+							class="fa fa-file-alt"></i> Requêtes 
+					</a></li>
+				
+					<li class="nav-item siderbar-link"><a th:href="@{/gse/statistiques}"
+						class="nav-link p-2 mb-3 ml-1    "> <i
+							class="fa fa-balance-scale"></i> Statistiques
+					</a></li>
+					<li class="nav-item siderbar-link "><a th:href="@{/gse/parametres}"
+						class="nav-link p-2 mb-3 ml-1   "> <i
+							class="fa fa-cog"></i> Paramètres
+					</a></li>
+				</ul>
+
+			</div>
+
+
+			<!--sidebar end-->
+
+
+			<div class="col-lg-10 ">
+				<!--card-->
+				<div class="row mb-2">
+
+					<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-6 mt-3">
+						<div class="card card-common">
+							<div class="card">
+								<div class="card-body card-label">
+									<i class="fa fa-laptop fa-2x text-success"></i><span
+										class="text-uppercase text-success px-3">ActiviteS</span>
+									<p id="countAct" class="text-right text-muted total">20</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6  mt-3">
+						<div class="card card-common">
+							<div class="card-body card-label">
+								<i class="fas fa-exclamation-triangle text-warning fa-2x"></i><span
+									class="text-warning px-3 ">INCIDENTS</span>
+								<p id="countInc" class="text-right text-muted  total">20</p>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6  mt-3">
+						<div class="card card-common">
+							<div class="card-body card-label">
+								<i class="fa fa-wrench fa-2x text-danger"></i><span
+									class="text-danger px-3">DIM</span>
+								<p id="countDim" class="text-right text-muted  total">20</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xl-3 col-lg-3 col-md-6 col-sm-6  mt-3">
+						<div class="card card-common ">
+							<div class="card">
+								<div class="card-body">
+									<i class="fa fa-calendar fa-2x text-info"></i><span
+										class="text-uppercase px-3" id="month"></span>
+									<p id="day" class=" badge badge-danger text-right total">20</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- Fragment -->
+
+				<section>
+					<div layout:fragment="content" class="col-l2"></div>
+				</section>
+				<!-- Fragment -->
+
+
+			</div>
+
+		</div>
+		<!--card-->
+
+
+
+	</div>
+	<!--lg 10-->
+
+
+
+	<div id="scroll-top" class="scroll-top">
+		<i class="fa fa-arrow-up fa-2x text-white "></i>
+	</div>
+
+	 <div id="chat-box" class="chat-box pulse">
+		<i class="fa fa-envelope fa-2x text-white  "></i>
+	</div>
+
+	<div class="chat-container mb-2">
+			<div class="card">
+  
+				<div class="card-header d-flex justify-content-between chat-header">
+					<h6 class="text-white title">G S E - Chatbot</h6>
+				   <span class="text-white closeBtn"> &times;</span>
+				</div>
+  
+				<div class="card-body chat-body m-2 
+				 text-wrapper">
+					<div class="row">
+						<i style="font-size : 22px;" class="fa fa-user-circle  "></i>
+						<i style="font-size : 23px;color :rgb(1, 61, 224);position: relative;left:3px;" class="fa fa-angle-left "></i>
+						<div class="message-body">
+					  
+							<p class="text-message text-white">Si vous avez un problème de manipulation, veuillez contactez sans hésitation
+								le service d'assistance technique ou le responsable de la maintenance.
+							  </p>
+						</div>
+					</div>
+					
+					
+					<span style="float: right; font-size : 10px; margin-right: 40px;" class="text-muted text-right">John Doe. 02 Jan 19 </span>
+  
+					<div class="send-body ">
+					   <i class="fa fa-file-alt"></i>
+					   <input type="text" class="input-chat"  placeholder="tapez..."/>
+						<i class="fas fa-arrow-right arrow"></i> 
+  
+					</div>
+					
+				</div>
+			
+  
+</div>
+</div></div>
+
+<div class="modal fade" id="logoutModal"
+						tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog modal-md" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">
+									  	Déconnexion
+											
+									</h5>
+									<button type="button" class="close" data-dismiss="modal"
+										aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<p class="text-center">
+										Voulez-vous vraiment vous déconnectez ?
+									</p>
+										<div class="container">
+											<div class="row">
+												<div class="col-5"></div>
+												<div class="col-4">
+													<div  class="ids-hourglass text-center ml-6" id="logout-log">
+										
+													</div>
+												</div>
+												<div class="col-3"></div>
+											</div>
+										</div>
+									
+
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary"
+												data-dismiss="modal">Non</button>
+											<button id="logoutBtn" class="btn btn-danger">Oui <i class="fa fa-sign-out-alt "></i> </button> 
+										</div>
+							
+								</div>
+					
+					
+							</div>
+						</div>
+					</div> 
+					<!--  Modal logout -->
+</body>
+
+</html>

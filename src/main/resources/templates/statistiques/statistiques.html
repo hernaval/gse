@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<meta charset="utf-8" />
+<title>G S E | Statistiques</title>
+<th:block th:include="fragments/head :: head"></th:block>
+
+<link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+
+<script th:src="@{/js/assets/Chart.min.js}"></script>
+
+<th:block th:include="activites/testJs :: excel"></th:block>
+<th:block th:include="faitmarquants/faitmarquantJs :: excel"></th:block>
+<!-- <script src="../js/stat.js/"></script> -->
+<th:block th:include="activites/testJs :: stat"></th:block>
+<th:block th:include="incidents/incidentJs :: stat"></th:block>
+<th:block th:include="faitmarquants/faitmarquantJs :: stat"></th:block>
+<th:block th:include="/layoutJs :: statInit"></th:block>
+<style type="text/css">
+#chart-container {
+	width: 640px;
+	height: auto;
+}
+</style>
+
+</head>
+<body>
+
+	<div layout:fragment="content" class="card p-2">
+
+
+		<nav>
+		
+			<div class="nav nav-tabs" id="nav-tab" role="tablist">
+				<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab"
+					href="#nav-home" role="tab" aria-controls="nav-home"
+					aria-selected="true"> Activites 
+				</a>
+				<a class="nav-item nav-link"
+					id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+					role="tab" aria-controls="nav-profile" aria-selected="true">
+					Incidents 
+				</a>
+				<a class="nav-item nav-link" id="nav-contact-tab"
+					data-toggle="tab" href="#nav-contact" role="tab"
+					aria-controls="nav-contact" aria-selected="true"> Faits Marquants 
+				</a>
+			</div>
+
+
+			<div class="tab-content" id="nav-tabContent">
+			
+				<div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+					aria-labelledby="nav-home-tab">
+					<div th:insert="activites/stat :: statAct"></div>
+				</div> <!-- home -->
+				
+				<div class="tab-pane fade  " id="nav-profile" role="tabpanel"
+					aria-labelledby="nav-profile-tab">
+					
+					<div th:replace="incidents/stat :: statInc"></div>
+				</div> <!-- profile -->
+				
+				
+				<div class="tab-pane fade  " id="nav-contact" role="tabpanel"
+					aria-labelledby="nav-contact-tab">
+					<div th:replace="faitmarquants/stat :: statFmq"></div>
+				</div> <!-- contact -->
+				
+			</div>
+		</nav>
+
+
+	</div>
+	<!-- card & fragment -->
+</body>
+</html>

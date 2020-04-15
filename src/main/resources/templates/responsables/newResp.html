@@ -1,0 +1,146 @@
+
+<div th:fragment="modal">
+<div class='modal fade' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' 
+	 aria-hidden='true' id='newResp'>
+	<div class='modal-dialog modal-lg ' role='document'>
+		<div class='modal-content '>
+
+			<div class='modal-header pers-header'>
+				<h5 class='modal-title'>
+					<i class='fa fa-user-plus '></i> <span class="text-white "  >Nouveau responsable </span>
+				</h5>
+				<button type='button' class='close text-white' data-dismisss='modal' aria-label='Close'>
+					<span aria-hidden='true'>&times;</span>
+				</button>
+			</div>
+
+			<div class='modal-body content'>
+
+                    <div class="container">
+                            <form method="post" id='form1' action="responsables/ajout">
+                            
+                            <div class="row">
+                                <div class="col-lg-5 border-rigth">
+                                    <h6 class="text-muted shape"> | Information personnelle</h6>
+                                    <table class="pers-info" >
+                                        <tr>
+                                            <td>
+                                                <label class="control-label">Code </label>
+                                            </td>
+                                            <td>
+                                                <input class="pers-form sm" id="reference" type="text" name="code_resp" />
+                                            </td>
+                                        </tr>
+
+                                        <small id="ref_err" class="text-danger"></small>
+                                            
+                                        </tr>
+
+                                        <tr>
+                                                <td>
+                                                    <label class="control-label">Nom </label>
+                                                </td>
+                                                <td>
+                                                    <input class="pers-form md" type="text" name="nom_resp" />
+                                                </td>
+                                        </tr>
+
+                                        <tr>
+                                                <td>
+                                                    <label class="control-label">Prenom  </label>
+                                                </td>
+                                                <td>
+                                                    <input class="pers-form md" type="text" name="prenom_resp" />
+                                                </td>
+                                        </tr>
+
+                                    </table>
+                                   
+                                </div>
+                                
+                                
+
+                                <div class="col-lg-7">
+                                        <h6 class="text-muted shape activeInfo"> | Information utilisateur</h6>
+                                        <table class="pers-info">
+                                            <tr>
+                                                <td>
+                                                        <label class="control-label">Username</label>
+                                                </td>
+                                                <td>
+                                                        <input class="pers-form md" id="username" type="text" name="username" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                        <label class="control-label">Mot de passe</label>
+                                                </td>
+                                                <td>
+                                                        <input class="pers-form md" type="password" id="pass1" name="password" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                        <label class="control-label">Confirmer mot de passe</label>
+                                                </td>
+                                                <td>
+                                                        <input class="pers-form md" id='pass2' name="pass2" type="password" />
+                                                        
+                                                </td>
+                                                
+                                            </tr>
+                                           
+                                        </table>
+                                        <small id="pwd_err"></small>
+                                  
+                                </div>
+                            </div>
+                            
+
+                            
+                        
+                        </div>
+								
+						</div>
+
+						<div class='modal-footer pers-footer'>
+									 <button type='button' class='btn btn-secondary' data-dismiss='modal'>Annuler</button>
+									<button type="submit" id='btnEdit' class='btn-success'>Enregistrer</button>
+							
+						 </div>
+
+						</form>
+				
+
+		   		 </div>
+		   
+
+	    </div>
+	</div>
+	
+</div>
+
+<!--##################################################################################################################-->
+Notre Père qui est aux cieux,
+Que ton nom soit Sanctifié,
+Que ton règne vienne,
+Que ta volonté soit faites sur la terre comme au ciel,
+Donnez-nous aujourd'hui notre pain de ce jour,
+Pardonnez-nous nos offenses, comme nous pardonnons aussi à ceux qui nous ont offensés,
+Ne nous sommet pas à la tentation mais délivrez-nous du mal,
+Amen.
+
+Je vous salue marie pleine de grâce, le Seigneur est avec vous,
+Vous êtes bénie entre toutes les femmes, et Jésus le fruit de vos entrailles est béni.
+Sainte Marie, mère de Dieu, priez pour nous pauvre pêcheur
+Maintenant et à l'heure de notre mort,
+Amen.
+
+Gloire soit au Père, au Fils, au Saint Espript,
+Comme il était au commencement, maintenant et pour les siècles et des siècles.
+Amen.
+
+
+
+
+

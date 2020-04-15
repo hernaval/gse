@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<meta charset="utf-8">
+<title>Dims | ajout</title>
+<th:block th:include="fragments/head :: head"></th:block>
+<th:block th:include="dims/dimJs :: validation"></th:block>
+<th:block th:include="/layoutJs :: statInit"></th:block>
+</head>
+
+<body>
+	<div class="card " layout:fragment="content">
+		<div class="ctrl" th:if="${addSuccess}">
+			<span th:text="${addSuccess}" class="notification animateOpen"></span>
+		</div>
+		
+		<h3 class="text-danger text-center mb-2 p-2">DIM</h3>
+
+		<div class="separator"></div>
+
+		<div class="container mt-2">
+			<form method="post" th:action="@{dims/ajout}">
+				
+
+			
+					<!-- lg 6 -->
+
+					
+						<div class="form-group">
+							<label class="control-label">Référence</label> <input
+								class="form-control-sm" id="reference" type="text" name="code_dim" />
+								<small id="ref_err" class="text-danger"></small>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Description </label> <input
+								id="lib_dir" class="form-control" type="text" name="desc_dim" />
+						</div>
+
+						<div class="form-group">Statut
+							<select class="form-control" name="etat_dim" id="">
+								<option value="en cours">En cours</option>
+								<option value="clôturé">Clôturé</option>
+								<option value="livré">Livré</option>
+							</select>
+						</div>
+
+						<div class="ml-auto">
+							<input class="btn btn-outline-primary  mr-3" type="submit"
+								value="ajouter" />
+						</div>
+
+			</form>
+		</div>
+		<!-- container -->
+
+
+	</div>
+</body>
+</html>

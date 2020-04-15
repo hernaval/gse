@@ -1,0 +1,75 @@
+
+<head>
+<meta charset="utf-8">
+</head>
+<div th:fragment="filtre">
+<p class="text-muted">Filtres</p> <span th:text="${sessiona}"></span>
+		
+		<!-- <div class="row px-2 mb-2">
+			Max<select class="form-control-sm" name="max-occur" id="max-occur">
+			<option value="3">3</option>
+			<option value="5">5</option>
+			<option value="10">10</option>
+			<option value="15">15</option>
+			<option value="20">20</option>
+			<option value="30">30</option>
+			<option value="50">50</option>
+			<option value="75">75</option>
+			<option value="100">100</option>
+			</select>
+
+		
+
+			De <input class="form-control-sm ml-2 mr-2" id="date1" type="date" />
+			à <input id="date2" class="form-control-sm ml-2 mr-2" type="date" />
+			
+			<button class="btn btn-info" id="intervalBtn"> <i class="fas fa-search"></i> </button>
+			<button class="btn btn-outline-success" id="export"><i class="fa fa-download"></i></button>
+		
+			
+			<div class="ml-auto ">
+				<input class="input" id="objet" type="search"
+					placeholder="objet"><button type="reset" class="search" id="search-btn"></button>
+			</div>
+			
+		</div>  row -->
+
+		<div class="row">
+			<div class="col-12">
+
+	
+						Max<select class="form-control-sm" name="max-occur" id="max-occur">
+								<option value="3">3</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="30">30</option>
+								<option value="50">50</option>
+								<option value="75">75</option>
+								<option value="100">100</option>
+								</select>
+			
+
+
+			
+						De <input class="form-control-sm ml-2 mr-2" id="date1" type="date" />
+						à <input id="date2" class="form-control-sm ml-2 mr-2" type="date" />
+			
+
+			
+						<button class="btn btn-info" id="intervalBtn"> <i class="fas fa-search"></i> </button>
+						<button class="btn btn-outline-success" id="export"><i class="fa fa-download"></i></button>
+
+
+								<!--<input class="input " id="objet" type="search"
+						placeholder="objet"><button type="reset" class="search" ></button>-->
+						
+								<input type="text" class="form-control-md search-box " id="objet" />
+					
+						
+
+		
+					</div>
+		</div>
+</div>

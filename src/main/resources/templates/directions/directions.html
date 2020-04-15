@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="../css/bootstrap.min.css" />
+<script src="../js/jquery-3.1.0.js/"></script>
+<script src="../js/bootstrap.bundle.js/"></script>
+</head>
+<body>
+	<h3 class="text-danger text-center">Les directions</h3>
+	
+	<h4 class="px-5">Ajout d'une direction</h4>
+	
+	<div class="container">
+		<form method="post" action="directions/ajout">
+	
+		<div class="form-group">
+			<label class="control-label">Code</label>
+			<input class="form-control-md" type="text" name="code_dir" />
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label">Nom de la direction </label>
+			<input id="lib_dir" class="form-control-md" type="text" name="lib_dir" />
+		</div>
+		
+		<!-- type dmd
+			projet/chantier
+			carat
+		 select -->
+		
+		<input class="btn btn-outline-primary" type="submit" value="ajouter"/>
+		
+	</form>
+	</div>
+	
+	<h4>Liste des directions</h4>
+	
+	<a id="listBtn" href="#" >afficher la liste</a>
+	<div id="liste" class="container-fluid">
+		<p>filtrage</p>
+		
+		<div class="row mb-3 px-2">
+				Responsable
+			<select class="form-control-sm ml-2 mr-2 ">
+				<option>Tous</option>
+				<option>Zoelisoa</option>
+				<option>Mamy</option>
+				<option>Tiana</option>
+			</select>
+			
+			Demandeur
+			<select class="form-control-sm ml-2 mr-2 ">
+				<option>Tous</option>
+				<option>org</option>
+				<option>ced</option>
+			</select>
+			De <input class="form-control-sm ml-2 mr-2" type="date" /> à <input class="form-control-sm ml-2 mr-2" type="date" /> 
+
+			<div class="ml-auto mr-2">
+				<input class="form-control " type="search" placeholder="code">
+			</div>
+		</div>
+		
+		
+		<table class="table table-responsive">
+			<thead>
+				<tr class="text-center">
+					<th></th>
+					<th>Code</th>
+					<th>Direction</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			
+			<tbody>
+				<tr  th:each="dir:${listDir}">
+					<td> <input type="checkbox"/></td>
+					<td th:text="${dir.code_dir}"></td>
+					<td th:text="${dir.lib_dir}"></td>					
+					<td align="center">
+						<a class="btn btn-success text-white">E</a>
+						<a class="btn btn-danger text-white">D</a>
+					</td>
+				</tr>
+			</tbody>
+			
+		</table>
+	</div>
+	
+	<ul class="nav nav-pills">
+		<li th:each="pa,status:${pages}" >
+			<a th:href="@{directions(page=${status.index},size=${size})}" th:text="${status.index}" ></a>
+		</li>
+	</ul>
+	
+	<script>
+		$(document).ready(function(){
+			
+			$('#lib_dir').keyup(()=>{
+				$('#lib_dir').val().toUpperCase()
+				
+			})
+			
+			var bool = false
+			$('#liste').hide()
+			$('#listBtn').click(()=>{
+				bool = !bool
+				if(bool==false) $('#liste').hide()
+				else $('#liste').show()
+			})
+			
+			
+		})
+	</script>
+	
+	
+</body>
+</html>

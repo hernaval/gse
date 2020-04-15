@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<meta charset="utf-8">
+<title>G S E | Incident</title>
+<th:block th:include="fragments/head :: head"></th:block>
+<th:block th:include="incidents/incidentJs :: validation"></th:block>
+<th:block th:include="incidents/incidentJs :: filter"></th:block>
+<th:block th:include="applications/applicationJs :: init"></th:block>
+<th:block th:include="incidents/incidentJs :: excel"></th:block>
+<th:block th:include="/layoutJs :: statInit"></th:block>
+<style>
+td:nth-child(9) {
+	width: 10%;
+}
+
+td:nth-child(4) {
+	width: 25%;
+}
+
+td {
+	font-size: 13px;
+}
+
+td:nth-child(1) {
+	width: 7%;
+}
+</style>
+
+</head>
+
+
+
+<body>
+	<div class="card" layout:fragment="content">
+		
+		<div class="card-header panel-incident">
+			<i class="fas fa-exclamation-triangle"></i> <span class="text-panel"> Incidents </span> <a th:href="@{/gse/ajoutIncidents}"
+				class="btn btn-outline-primary floating pulse "><i
+				class="fa fa-plus  "></i></a>
+		</div>
+
+		<div class="card-body">
+
+			<div th:replace="fragments/filter :: filtre" class="container">
+				
+				</div>
+				<div  class="sp-bars" ></div>
+				<table id="tableIncidents"
+					class="table table-responsive table-sm table-bordered ">
+					<thead class="bg-dark text-white">
+						<tr class="text-center">
+
+							<th>Ref</th>
+							<th>Date début</th>
+							<th>Heure début</th>
+							<th>Cause</th>
+							<th>Util/impacté</th>
+
+							<th>Conséquences</th>
+							<th>Souc cat Risk</th>
+							<th>Perte interne (en Ariary)</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+
+					<tbody id="result">
+						<tr th:each="inc:${listInc}">
+
+							<td th:text="${inc.code_inc}"></td>
+							<td th:text="${inc.date_deb_inc}"></td>
+							<td th:text="${inc.heure_deb_inc}"></td>
+							<td th:text="${inc.cause_inc}"></td>
+							<td th:text="${inc.util_imp_inc}"></td>
+
+							<td th:text="${inc.consequence_inc}"></td>
+							<td th:text="${inc.sous_cat_risk}"></td>
+							<td th:text="${inc.perte_interne}"></td>
+
+							<td align="center">
+
+								<button type="button" class="btn  btn-info text-white"
+									data-toggle="modal" th:attr="data-target='#'+${inc.code_inc} "><i class="fa fa-edit" ></i>
+								</button>
+								 <!-- modal -->
+								 	<div th:replace="incidents/modalEditInc :: modal"></div>
+								 <!-- modal -->
+
+							</td>
+
+						</tr>
+					</tbody>
+
+				</table>
+			</div>
+
+			<nav>
+				<ul class="pagination" id="pagination">
+					<li class="page-item" th:each="pa,status:${pages}"><a
+						th:href="@{incidents(page=${status.index}+1,size=${size})}"
+						th:text="${status.index}+1" class="page-link"></a></li>
+				</ul>
+			</nav>
+			<input type="hidden" id="page"/>
+			
+		</div>
+		<!-- card body -->
+	
+	<!-- card -->
+
+</body>
+</html>

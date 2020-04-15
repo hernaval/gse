@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>G S E | Activité</title>
+<th:block th:include="fragments/head :: head"></th:block>
+
+<th:block th:include="activites/testJs :: filter"></th:block>
+
+
+<th:block th:include="activites/testJs :: validation"></th:block>
+
+<th:block th:include="directions/directionJs :: init"></th:block>
+<th:block th:include="activites/testJs :: excel"></th:block>
+<th:block th:include="/layoutJs :: statInit"></th:block>
+
+<!--plugin-->
+
+
+
+
+
+<style>
+	td:nth-child(4){
+		width : 25%;
+	}
+	
+	td{
+		font-size : 13px;
+	}
+	td:nth-child(1){
+		width : 7%;
+	}
+</style>
+</head>
+<body>
+
+
+
+<div class="card " id="page" layout:fragment="content">
+	
+	<div class="card-header panel-activity">
+	<i class="fa fa-laptop " ></i> <span class="text-panel"> Activites </span>
+	<a th:href="@{/gse/ajoutActivites}" class="btn btn-outline-primary floating pulse "><i class="fa fa-plus  " ></i></a>
+	</div>
+	
+	<div class="card-body">
+	
+	<div th:insert="fragments/filter :: filtre" class="container">
+	
+		
+	</div>
+	<div  class="sp-bars" ></div>
+		
+		<table  id="tableExcel" class="table table-responsive table-sm table-bordered ">
+			<thead class="bg-dark text-white">
+				<tr class="text-center">
+					
+					<th>Date</th>
+					<th>Demandeur</th>
+					<th>Caract</th>
+					<th>OBJET</th>
+					<th>Responsable</th>
+					<th>modif</th>
+					<th>DateLiv</th>					
+					<th>Obs</th>
+					<th>Type dmd</th>
+					<th>Etat</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			
+			<tbody   id="result">
+				
+				<tr  th:each="activite:${listActivity}">
+					
+					<td th:text="${activite.date_act}"></td>
+					<td th:text="${activite.direction.getLib_dir()}"></td>
+					<td th:text="${activite.caract_act}"></td>
+					<td th:text="${activite.object_act}"></td>
+					<td th:text="${activite.responsable.getNom_resp()}"></td>
+					<td th:text="${activite.editeur.getNom_resp()}"></td>
+					<td th:text="${activite.data_liv_act}"></td>
+					<td th:text="${activite.obs_act}"></td>
+					<td th:text="${activite.type_dmd}"></td>
+					<td th:text="${activite.etat_act}"
+						th:class="${activite.etat_act}=='ok'? 'badge badge-pill  badge-success' : 'badge badge-pill badge-danger' "></td>
+					<td align="center">
+
+						<button type="button" class="btn  btn-info text-white"
+							data-toggle="modal"
+							th:attr="data-target='#'+${activite.code_act} "><i class="fa fa-edit" ></i>
+						</button> 
+						<!-- Modal edit -->
+						<div th:replace="activites/modalEditAct :: modal"></div>
+						<!-- Modal edit -->
+						  <a
+						th:href="${activite.etat_act}=='ok'? '#' : @{activites/req(action=terminer,code_act=${activite.code_act})}"
+						th:class="${activite.etat_act}=='ok'? 'd-none text-white' : 'btn btn-success'  "
+						th:text="${activite.etat_act}=='ok'? F : T "> </a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<nav>
+			<ul class="pagination" id="pagination">
+				<li class="page-item" th:each="pa,status:${pages}">  <a th:href="@{activites(page=${status.index}+1,size=${size})}"
+					th:text="${status.index}+1" class="page-link"></a>  </li>
+			</ul>
+		</nav>
+		
+		<input type="hidden" id="page"/>
+	
+	
+	
+
+	</div> <!-- card-body -->
+</div>
+
+<script>
+	/**
+ * 
+ */
+$(document).ready(function(){
+	//recherche d'objet
+	
+	$('.sp-bars').hide()
+	currentPage(0)
+	$('#objet').keyup(()=>{
+		console.log("salut")
+		//initLoader()
+		//setTimeout(function(){
+			//finishLoader()
+			search();
+		//},345)
+		
+	})
+	$('#intervalBtn').click(()=>{
+		//initLoader()
+		//setTimeout(function(){
+			//finishLoader()
+			dateFilter()
+		//},1500)
+		
+	})
+	$('#max-occur').change(function(){
+		
+		initLoader()
+		var size = $('#max-occur').val()
+		setTimeout(function(){
+			finishLoader()
+			if( $('#date1').val() =='' && $('#date2').val() =='')
+			{
+				window.location.href = "/gse/dims?page=1&size="+size
+			}else{
+			dateFilter(0,size)
+			}
+		},1500)
+
+	})
+
+})
+
+function initLoader(){
+	$('#result').addClass("hidden")
+	$('.sp-bars').fadeIn(300)
+}
+function finishLoader(){
+	$('.sp-bars').fadeOut(200)
+	$('#result').removeClass("hidden")
+}
+
+
+function getStateProperty(){
+	$('[id=en]').addClass("badge  badge-danger")
+	$('[id=livré]').addClass("badge  badge-success")
+	$('[id=clôturé]').addClass("badge  badge-warning")
+}
+
+function search(){
+	var mc = $('#objet').val()
+	
+	$.ajax({
+		method : "get",
+		url : "/gse/dims/search/"+mc ,
+		dataType : "json",
+		contentType : "application/json",
+		success : function (data){
+		
+			var res="";
+			if(data.length==0){
+				res = "<p class='text-danger text-center' >Pas d'occurence trouvé pour ces conditions ! </p>"
+					$('#result').html(res);
+			}
+			else{
+			for(i=0;i<data.length;i++){
+				
+				//console.log(data[i])
+				 res += "<tr>   <td>"+data[i].code_dim+"</td>" +
+				 				"<td>"+data[i].date_dim+"</td>" +
+								"<td>"+data[i].desc_dim+"</td> " +
+								"<td id="+data[i].etat_dim+"  >"+data[i].etat_dim+"</td> " +
+								"<td align='center'>" +
+									"<button type='button' onclick=\"openModal('"+data[i].code_dim+"')\"  class='btn btn-info m-1 text-white' type='button'  id="+data[i].code_dim+" ><i class='fa fa-edit'></i></button>" +
+									"<div id='modalEdit'></div>"+
+								"</td> " +
+						"</tr>"	
+								
+				
+			}
+			$('#result').html(res)
+			$('#modalEdit').html(modal())
+			getStateProperty()	
+			//getStateProperty()
+			} //else
+			
+			
+			
+		}
+	})
+}
+
+function fill(ref){
+	$.ajax({
+		method : "get",
+		url : "/gse/dims/checkRef/"+ref ,
+		dataType : "json",
+		contentType : "application/json",
+		success : function (data){
+			$('#ref').html(data.code_dim)
+			$('#code_dim').val(data.code_dim)
+			$('#desc_dim').val(data.desc_dim)
+			$('#date_dim').val(data.date_dim)
+			$('#etat_dim').val(data.etat_dim)
+		}
+	})
+}
+
+function openModal(data){
+	console.log(data)
+	fill(data)
+	$('#testModal').modal('show')
+	
+}
+
+function modal(){
+	m = "<div class='modal fade' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' "+
+	" aria-hidden='true' id='testModal'>"+
+	"<div class='modal-dialog modal-lg ' role='document'>"+
+		"<div class='modal-content '>"+
+
+			"<div class='modal-header pers-header'>"+
+				"<h5 class='modal-title'>"+
+					" <i class='fas fa-edit text-info'></i>  Modification N° <span class='text-danger' id='ref' ></span>"+
+				"</h5>"+
+				"<button type='button' class='close' data-dismisss='modal' aria-label='Close'>"+
+					"<span aria-hidden='true'>&times;</span>"+
+				"</button>"+
+			"</div>"+
+
+			"<div class='modal-body'>"+
+
+				"<form action='/gse/dims/modification' method='post'>"+
+					"<div class='container text-left'>"+
+								
+						   " <div class='row'>"+
+							
+							"</div>"+
+								"<div class='form-group'>"+
+									"<label class='control-label'></label> <input class='form-control-sm' id='code_dim'   type='hidden' name='code_dim' />"+
+								"</div>"+
+
+								"<div class='form-group'>"+
+									"<label class='control-label'></label> <input class='form-control-sm' id='date_dim'   type='hidden' name='date_dim' />"+
+								"</div>"+
+
+								"<div class='form-group'>"+
+									"<label class='control-label'>Description</label>"+
+									"<textarea class='form-control' id='desc_dim'  name='desc_dim'></textarea>"+
+								"</div>"+
+
+								"<div class='form-group'>Statut"+
+                                	"<select class='form-control' name='etat_dim' id='etat_dim'>"+
+                                    "+<option value='en cours'>En cours</option>"+
+                                    "<option value='clôturé'>Clôturé</option>"+
+                                    "<option value='livré'>Livré</option>"+
+                                	"</select>"+
+                            	"</div>"+
+
+						"</div>"+
+
+						"<div class='modal-footer  pers-footer'>"+
+						   " <button type='button' class='btn btn-secondary' data-dismiss='modal'>Annuler</button>"+
+							"<button id='btnEdit' class='btn-success'>Enregistrer</button>"+
+							
+						
+							
+					   " </div>"+
+				"</form>"+
+
+		   " </div>"+
+
+	   " </div>"+
+	"</div>"+
+"</div>"
+return m
+}
+
+
+function dateFilter(page=0,size=3){ //page 0 and size 3
+	//suppression de l'ancien pagination
+	$('#pagination').html("")
+	
+	var date1 = $('#date1').val()
+	var date2 = $('#date2').val()
+								
+	$('#result').html("")
+	$.ajax({
+		method : "get",
+		url : "/gse/dims/parDate/"+date1+"/"+date2+"/"+page+"/"+size,
+		dataType : "json",
+		contentType : "application/json",
+		success : function (data){
+			//console.log(data.content[0].code_dim)
+			
+			var res="";
+			if(data.length==0){
+				res = "<p class='text-danger text-center' >Pas d'occurence trouvé pour ces conditions ! </p>"
+					$('#result').html(res);
+			}
+			else{
+			for(i=0;i<data.content.length;i++){
+
+				res += "<tr>" +
+							"<td>"+data.content[i].code_dim+"</td>" +
+							"<td>"+data.content[i].date_dim+"</td>" +
+							"<td>"+data.content[i].desc_dim+"</td> " +
+							"<td id="+data.content[i].etat_dim+" >"+data.content[i].etat_dim+"</td> " +
+							"<td align='center'>" +
+								"<button type='button' onclick=\"openModal('"+data.content[i].code_dim+"')\"   class='btn btn-info m-1 text-white'  type='button'  id="+data.content[i].code_dim+" ><i class='fa fa-edit'></i></button>" +
+								"<div id='modalEdit'></div>"+
+							"</td> " +
+						"</tr>"	
+					
+
+			}
+			$('#result').html(res)
+			$('#modalEdit').html(modal())
+			getStateProperty()	
+			//pagination
+			var paginate = ""
+				for(i=0;i<data.totalPages;i++){
+					size = $('#max-occur').val()
+					paginate += "<li>" +
+							"<button onclick=\"action("+i+","+size+")\" class='btn btn-sm btn-outline-info mr-2 p-2'  > " +(i+1)
+							"</button>" +
+							"</li>"
+				}
+			$('#pagination').html(paginate)
+			} //else
+		}
+	})
+}
+
+function action(i,size){
+	initLoader()
+	setTimeout(function(){
+		finishLoader()
+		dateFilter(i,size)
+		currentPage(i)
+	},900)
+	
+}
+function currentPage(page){
+	$('#page').val(page)
+}
+</script>
+	
+</body>
+</html>
