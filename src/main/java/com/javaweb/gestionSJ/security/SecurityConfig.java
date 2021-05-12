@@ -28,11 +28,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth ) throws Exception{
 		//configuration des requêtes dans la base de données
-		auth.jdbcAuthentication()
+		/*auth.jdbcAuthentication()
 			.dataSource(dataSource)
 			.usersByUsernameQuery("select code_resp as principal,password as credentials,active from Responsables where code_resp=?" )
 			.authoritiesByUsernameQuery("select code_resp as principal, role as role from Responsables where code_resp=?" )
-			.passwordEncoder(pass);
+			.passwordEncoder(pass); */
+		auth.inMemoryAuthentication()
+				.withUser("admin").password(passwordEncoder().encode("admin"))
+				.authorities("ROLE_ADMIN");
 			
 	}
 	@Override
@@ -68,21 +71,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter  {
 	public static String getMd5(String input){
 		MessageDigest md;
 		String hashtext ="";
+		StringBuilder sb = new StringBuilder();
 		try {
 			md = MessageDigest.getInstance("MD5");
 			byte[] messageDigest = md.digest(input.getBytes());
 			BigInteger no = new BigInteger(1,messageDigest);
 			
 			 hashtext = no.toString();
+
 			
 			while(hashtext.length() < 32){
-				hashtext = "0" + hashtext;
+				sb.append(0+hashtext);
+				//hashtext = "0" + hashtext;
 			}
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return hashtext;
+		return sb.toString();
 	}
 	
 	
