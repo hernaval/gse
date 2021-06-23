@@ -1,0 +1,382 @@
+
+<head>
+<meta charset="utf-8">
+</head>
+
+<!-- filter -->
+<div th:fragment="filter">
+
+	<script>
+	/**
+	 * 
+	 */
+	$(document).ready(function(){
+		//recherche d'objet
+
+		
+		$('.sp-bars').hide()
+		currentPage(0)
+		$('#objet').keyup(()=>{
+			
+			initLoader()
+			setTimeout(function(){
+				finishLoader()
+				search();
+			},345)
+			
+		})
+		$('#intervalBtn').click(()=>{
+			initLoader()
+			setTimeout(function(){
+				finishLoader()
+				dateFilter()
+			},1500)
+			
+		})
+		$('#max-occur').change(function(){
+			
+			initLoader()
+			var size = $('#max-occur').val()
+			setTimeout(function(){
+				finishLoader()
+				if( $('#date1').val() =='' && $('#date2').val() =='')
+				{
+					window.location.href = "dims?page=1&size="+size
+				}else{
+				dateFilter(0,size)
+				}
+			},1500)
+
+		})
+
+	})
+
+	function initLoader(){
+		$('#result').addClass("hidden")
+		$('.sp-bars').fadeIn(300)
+	}
+	function finishLoader(){
+		$('.sp-bars').fadeOut(200)
+		$('#result').removeClass("hidden")
+	}
+
+
+	function getStateProperty(){
+		$('[id=en]').addClass("badge  badge-danger")
+		$('[id=livré]').addClass("badge  badge-success")
+		$('[id=clôturé]').addClass("badge  badge-warning")
+	}
+
+	function search(){
+		var mc = $('#objet').val()
+		
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/dims/search/}]]"+mc ,
+			dataType : "json",
+			contentType : "application/json",
+			success : function (data){
+			
+				var res="";
+				if(data.length==0){
+					res = "<p class='text-danger text-center' >Pas d'occurence trouvé pour ces conditions ! </p>"
+						$('#result').html(res);
+				}
+				else{
+				for(i=0;i<data.length;i++){
+					
+					//console.log(data[i])
+					 res += "<tr>   <td>"+data[i].code_dim+"</td>" +
+					 				"<td>"+data[i].date_dim+"</td>" +
+									"<td>"+data[i].desc_dim+"</td> " +
+									"<td id="+data[i].etat_dim+"  >"+data[i].etat_dim+"</td> " +
+									"<td align='center'>" +
+										"<button type='button' onclick=\"openModal('"+data[i].code_dim+"')\"  class='btn btn-info m-1 text-white' type='button'  id="+data[i].code_dim+" ><i class='fa fa-edit'></i></button>" +
+										"<div id='modalEdit'></div>"+
+									"</td> " +
+							"</tr>"	
+									
+					
+				}
+				$('#result').html(res)
+				$('#modalEdit').html(modal())
+				getStateProperty()	
+				//getStateProperty()
+				} //else
+				
+				
+				
+			}
+		})
+	}
+
+	function fill(ref){
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/dims/checkRef/}]]"+ref ,
+			dataType : "json",
+			contentType : "application/json",
+			success : function (data){
+				$('#ref').html(data.code_dim)
+				$('#code_dim').val(data.code_dim)
+				$('#desc_dim').val(data.desc_dim)
+				$('#date_dim').val(data.date_dim)
+				$('#etat_dim').val(data.etat_dim)
+			}
+		})
+	}
+
+	function openModal(data){
+		console.log(data)
+		fill(data)
+		$('#testModal').modal('show')
+		
+	}
+
+	function modal(){
+		m = "<div class='modal fade' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' "+
+		" aria-hidden='true' id='testModal'>"+
+		"<div class='modal-dialog modal-lg ' role='document'>"+
+			"<div class='modal-content '>"+
+
+				"<div class='modal-header pers-header'>"+
+					"<h5 class='modal-title'>"+
+						" <i class='fas fa-edit text-info'></i>  Modification N° <span class='text-danger' id='ref' ></span>"+
+					"</h5>"+
+					"<button type='button' class='close' data-dismisss='modal' aria-label='Close'>"+
+						"<span aria-hidden='true'>&times;</span>"+
+					"</button>"+
+				"</div>"+
+
+				"<div class='modal-body'>"+
+
+					"<form th:action='@{/gse/dims/modification}' method='post'>"+
+						"<div class='container text-left'>"+
+									
+							   " <div class='row'>"+
+								
+								"</div>"+
+									"<div class='form-group'>"+
+										"<label class='control-label'></label> <input class='form-control-sm' id='code_dim'   type='hidden' name='code_dim' />"+
+									"</div>"+
+
+									"<div class='form-group'>"+
+										"<label class='control-label'></label> <input class='form-control-sm' id='date_dim'   type='hidden' name='date_dim' />"+
+									"</div>"+
+
+									"<div class='form-group'>"+
+										"<label class='control-label'>Description</label>"+
+										"<textarea class='form-control' id='desc_dim'  name='desc_dim'></textarea>"+
+									"</div>"+
+
+									"<div class='form-group'>Statut"+
+	                                	"<select class='form-control' name='etat_dim' id='etat_dim'>"+
+	                                    "+<option value='en cours'>En cours</option>"+
+	                                    "<option value='clôturé'>Clôturé</option>"+
+	                                    "<option value='livré'>Livré</option>"+
+	                                	"</select>"+
+	                            	"</div>"+
+
+							"</div>"+
+
+							"<div class='modal-footer  pers-footer'>"+
+							   " <button type='button' class='btn btn-secondary' data-dismiss='modal'>Annuler</button>"+
+								"<button id='btnEdit' class='btn-success'>Enregistrer</button>"+
+								
+							
+								
+						   " </div>"+
+					"</form>"+
+
+			   " </div>"+
+
+		   " </div>"+
+		"</div>"+
+	"</div>"
+	return m
+	}
+
+
+	function dateFilter(page=0,size=3){ //page 0 and size 3
+		//suppression de l'ancien pagination
+		$('#pagination').html("")
+		
+		var date1 = $('#date1').val()
+		var date2 = $('#date2').val()
+									
+		$('#result').html("")
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/dims/parDate/}]]"+date1+"/"+date2+"/"+page+"/"+size,
+			dataType : "json",
+			contentType : "application/json",
+			success : function (data){
+				//console.log(data.content[0].code_dim)
+				
+				var res="";
+				if(data.length==0){
+					res = "<p class='text-danger text-center' >Pas d'occurence trouvé pour ces conditions ! </p>"
+						$('#result').html(res);
+				}
+				else{
+				for(i=0;i<data.content.length;i++){
+
+					res += "<tr>" +
+								"<td>"+data.content[i].code_dim+"</td>" +
+								"<td>"+data.content[i].date_dim+"</td>" +
+								"<td>"+data.content[i].desc_dim+"</td> " +
+								"<td id="+data.content[i].etat_dim+" >"+data.content[i].etat_dim+"</td> " +
+								"<td align='center'>" +
+									"<button type='button' onclick=\"openModal('"+data.content[i].code_dim+"')\"   class='btn btn-info m-1 text-white'  type='button'  id="+data.content[i].code_dim+" ><i class='fa fa-edit'></i></button>" +
+									"<div id='modalEdit'></div>"+
+								"</td> " +
+							"</tr>"	
+						
+
+				}
+				$('#result').html(res)
+				$('#modalEdit').html(modal())
+				getStateProperty()	
+				//pagination
+				var paginate = ""
+					for(i=0;i<data.totalPages;i++){
+						size = $('#max-occur').val()
+						paginate += "<li>" +
+								"<button onclick=\"action("+i+","+size+")\" class='btn btn-sm btn-outline-info mr-2 p-2'  > " +(i+1)
+								"</button>" +
+								"</li>"
+					}
+				$('#pagination').html(paginate)
+				} //else
+			}
+		})
+	}
+
+	function action(i,size){
+		initLoader()
+		setTimeout(function(){
+			finishLoader()
+			dateFilter(i,size)
+			currentPage(i)
+		},900)
+		
+	}
+	function currentPage(page){
+		$('#page').val(page)
+	}
+	</script>
+</div>
+
+<!-- excel -->
+<div th:fragment="excel">
+	<script>
+	/**
+	 * 
+	
+	 */$(document).ready(function(){
+		
+		$('#export').click(()=>{
+			exporte()
+		})
+	})
+
+	function exporte(){
+		var date1 = $('#date1').val()
+		var date2 = $('#date2').val()
+		var size = $('#max-occur').val()
+		
+		page = parseInt($('#page').val())
+		if(page == NaN) page = 0 
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/dims/parDate/}]]"+date1+"/"+date2+"/"+page+"/"+size,
+			dataType : "json",
+			contentType: "application/json",
+			success : function (data){
+				var res = "<tr>" +
+								"<th>Référence</th>" +
+								"<th>Date </th>" +
+								"<th>Description</th>" +
+								"<th>Etat</th>" +
+						"</tr>"
+								for(i=0;i<data.content.length;i++){
+
+									res += "<tr>" +
+												"<td>"+data.content[i].code_dim+"</td>" +
+												"<td>"+data.content[i].date_dim+"</td>" +
+												"<td>"+data.content[i].desc_dim+"</td> " +
+												"<td>"+data.content[i].etat_dim+"</td> " +
+											"</tr>"	
+								}
+				date = new Date()
+				filename= "Dims/"+date.getDay()+"-"+date.getMonth()+"-"+date.getYear("YYYY")
+				exportToExcel(res,filename)
+			}
+		})
+	}
+
+	function exportToExcel(htmls,filename){
+
+	            var uri = 'data:application/vnd.ms-excel;base64,';
+	            var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="content-type" content="application/vnd.ms-excel;charset="utf-8"> <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'; 
+	            var base64 = function(s) {
+	                return window.btoa(unescape(encodeURIComponent(s)))
+	            };
+
+	            var format = function(s, c) {
+	                return s.replace(/{(\w+)}/g, function(m, p) {
+	                    return c[p];
+	                })
+	            };
+	            
+	            var ctx = {
+	                worksheet : 'Worksheet',
+	                table : htmls
+	            }
+
+
+	            var link = document.createElement("a");
+	            link.download = filename;
+	            link.href = uri + base64(format(template, ctx));
+	            link.click();
+	}
+	</script>
+</div>
+
+<!-- validation -->
+<div th:fragment="validation">
+	<script>
+	/**
+	 * 
+	 */
+	$(document).ready(function(){
+	    $('#reference').focusout(()=>{
+	        checkRef()
+	    })
+	})
+
+	function checkRef(){
+		var ref= $('#reference').val()
+		
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/dims/checkRef/}]]"+ref,
+			dataType : "json",
+			contentType : "application/json",
+			success : function(data){
+				if(data != null){
+					$('#reference').focus()
+					$('#ref_err').html("Référence DIM existant ! ")
+				}
+				else{
+					$('#ref_err').html("")
+				}
+			},
+			error : function(){
+				console.log("error")
+			}
+		})
+	}
+
+	</script>
+</div>

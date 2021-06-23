@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<meta charset="utf-8">
+<title>Requêtes  | ajout</title>
+<th:block th:include="fragments/head :: head"></th:block>
+<th:block th:include="/layoutJs :: statInit"></th:block>
+</head>
+
+<body>
+	<div class="card " layout:fragment="content">
+		<div class="ctrl" th:if="${addSuccess}">
+			<span th:text="${addSuccess}" class="notification animateOpen"></span>
+		</div>
+		
+		<h3 class="text-danger text-center mb-2 p-2">Requête</h3>
+
+		<div class="separator"></div>
+
+		<div class="container mt-2">
+			<form method="post" th:action="@{requetes/ajout}">
+				
+
+			
+					<!-- lg 6 -->
+
+
+                        <div class="form-group">
+                            <label class="control-label">Référence</label> <input
+                                class="form-control-sm" id="reference" type="text" name="idReq" />
+                                <small id="ref_err" class="text-danger"></small>
+                        </div>
+
+						<div class="form-group">
+							<label class="control-label">Nom de la reqûete</label> <input
+								class="form-control-sm" id="reference" type="text" name="nomReq" />
+								<small id="ref_err" class="text-danger"></small>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Intitulé </label> <input
+								id="lib_dir" class="form-control" type="text" name="intitule" />
+                        </div>
+
+                        <div class="form-group">
+							<label class="control-label">Date de traitement </label> <input
+								id="lib_dir" class="form-control" type="date" name="dateTraitement" />
+                        </div>
+                        
+                        <div class="form-group">
+							<label class="control-label">Elément en entrée </label> <textarea
+								id="lib_dir" class="form-control" type="text" name="eltEntree" ></textarea>
+                        </div>
+
+                        <div class="form-group">
+							<label class="control-label">Elément en sortie </label> <textarea
+								id="lib_dir" class="form-control" type="text" name="eltSortie" ></textarea>
+                        </div>
+
+						<div class="form-group">Exécution
+							<select class="form-control" name="execution" id="">
+								<option value="sgabs">SGABS</option>
+								<option value="webselect">WEBSELECT</option>
+                                <option value="local">LOCAL</option>
+                                <option value="amplitude">AMPLITUDE</option>
+							</select>
+						</div>
+
+						<div class="ml-auto">
+							<input class="btn btn-outline-primary  mr-3" type="submit"
+								value="ajouter" />
+						</div>
+
+			</form>
+		</div>
+		<!-- container -->
+
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+
+<meta charset="utf-8" />
+<title>Insert title here</title>
+</head>
+<div th:fragment="statInc">
+
+<div class="row">
+	<div class="col-lg-6 col-md-6">
+		<div class="card m-1">
+			<div class="card-header panel-activity">
+				<span class="font-weight-bold">STATISTIQUES D'INCIDENT PAR
+					DIRECTION</span>
+				<div class="row">
+
+					De <input class="form-control ml-2 mr-2" id="dateInc1" type="date" />
+					à <input id="dateInc2" class="form-control ml-2 mr-2" type="date" />
+
+				</div>
+
+			</div>
+
+			<div class="card-body">
+
+				<div class="chart-container">
+					<canvas id="mycanvas2"></canvas>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-md-6">
+		<div class="card m-1">
+			<div class="card-header text-center">
+				<span class="font-weight-bold">STATISTIQUES D'INCIDENT PAR
+					RESPONSABLE</span>
+				<div class="row">
+
+					De <input class="form-control ml-2 mr-2" id="dateInc3" type="date" />
+					à <input id="dateInc4" class="form-control ml-2 mr-2" type="date" />
+
+				</div>
+
+			</div>
+
+			<div class="card-body ">
+
+				<div class="chart-container">
+					<canvas id="mycanvas=4"></canvas>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<!--row-->
+</div>

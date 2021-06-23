@@ -1,0 +1,542 @@
+
+<head>
+<meta charset="utf-8">
+</head>
+
+<!-- filter -->
+<div th:fragment="filter">
+	<script>
+	/**
+	 * 
+	 */
+	$(document).ready(function(){
+		$('.sp-bars').hide()
+		currentPage(0)
+		$('#objet').keyup(()=>{
+			
+			initLoader()
+			setTimeout(function(){
+				finishLoader()
+				search();
+			},345)
+			
+		})
+		$('#intervalBtn').click(()=>{
+			initLoader()
+			setTimeout(function(){
+				finishLoader()
+				dateFilter()
+			},1500)
+			
+		})
+		$('#max-occur').change(function(){
+			
+			initLoader()
+			var size = $('#max-occur').val()
+			setTimeout(function(){
+				finishLoader()
+				if( $('#date1').val() =='' && $('#date2').val() =='')
+				{
+					window.location.href = "faitmarquants?page=1&size="+size
+				}else{
+				dateFilter(0,size)
+				}
+			},1500)
+
+		})
+
+		
+	})
+
+	function initLoader(){
+		$('#result').addClass("hidden")
+		$('.sp-bars').fadeIn(300)
+	}
+	function finishLoader(){
+		$('.sp-bars').fadeOut(200)
+		$('#result').removeClass("hidden")
+	}
+
+
+	function dateFilter(page=0,size=3){
+		var date1 = $('#date1').val()
+		var date2 = $('#date2').val()
+		$('#pagination').html("")
+		
+		$.ajax({
+			method :"get",
+			url : "[[@{/gse/faitmarquants/parDate/}]]"+date1+"/"+date2+"/"+page+"/"+size,
+			dataType : "json",
+			contentType :"application/json",
+			success : function(data){
+				var res="";
+				if(data.length==0){
+					res = "<p class='text-danger text-center' >Pas d'occurence trouvé pour ces conditions ! </p>"
+						$('#result').html(res);
+				}else{
+					for(i=0;i<data.content.length;i++){
+						res +="<tr> <td>"+data.content[i].code_fmq+"</td>" +
+									"<td>"+data.content[i].activite.object_act+"</td> " +
+									"<td>"+data.content[i].desc_fmq+"</td>" +
+									"<td>"+data.content[i].activite.direction.lib_dir+"</td>" +
+									"<td>"+data.content[i].date_liv_fmq+"</td>" +
+									"<td>"+data.content[i].date_prod_fmq+"</td>" +
+									"<td align='center'>" +
+										"<button type='button'  class='btn btn-info m-1 text-white' onclick=\"openModal('"+data.content[i].code_fmq+"')\" type='button'  id="+data.content[i].code_fmq+" ><i class='fa fa-edit'></i></button>" +
+										"<div id='modalEdit'></div>"+
+									"</td>"
+					}
+				}
+				
+				$('#result').html(res)
+				$('#modalEdit').html(modal())
+				var paginate = ""
+				for(i=0;i<data.totalPages;i++){
+					size = $('#max-occur').val()
+					paginate += "<li>" +
+							"<button onclick=\"action("+i+","+size+")\" class='btn btn-sm btn-outline-info mr-2 p-2'  > " +(i+1)
+							"</button>" +
+							"</li>"
+				}
+			$('#pagination').html(paginate)
+			} //success 
+		})
+	}
+
+	function action(i,size){
+		initLoader()
+		setTimeout(function(){
+			finishLoader()
+			dateFilter(i,size)
+			currentPage(i)
+		},900)
+		
+	}
+
+	function fill(ref){
+
+	}
+
+	function openModal(data){
+		fill(data)
+		$('#testModal').modal('show')
+		
+	}
+
+
+	function modal(){
+		m = "<div class='modal fade' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' "+
+		" aria-hidden='true' id='testModal'>"+
+		"<div class='modal-dialog modal-lg ' role='document'>"+
+			"<div class='modal-content '>"+
+
+				"<div class='modal-header pers-header'>"+
+					"<h5 class='modal-title'>"+
+						" <i class='fas fa-edit text-info'></i>  Modification N° <span class='text-danger' id='ref' ></span>"+
+					"</h5>"+
+					"<button type='button' class='close' data-dismisss='modal' aria-label='Close'>"+
+						"<span aria-hidden='true'>&times;</span>"+
+					"</button>"+
+				"</div>"+
+
+				"<div class='modal-body'>"+
+
+					"<form th:action='@{/gse/faitmarquants/modification}' method='post'>"+
+						"<div class='container text-left'>"+
+									
+								
+								"</div>"+
+								
+									"<input class='form-control-sm' id='code_fmq'   type='hidden' name='code_fmq' />"+
+							
+
+								
+									"<input class='form-control-sm' id='date_fmq'   type='hidden' name='date_fmq' />"+
+							
+
+								
+									"<input class='form-control-sm' id='code_act'   type='hidden' name='code_act' />"+
+								
+
+									"<div class='form-group'>"+
+										"<label class='control-label'>Description du fait</label>"+
+										"<input class='form-control' id='desc_fmq'  name='desc_fmq' />"+
+									"</div>"+
+
+									"<div class='form-group'>"+
+										"<label class='control-label'>Date de mise en production</label> <input class='form-control-sm' id='date_prod_fmq'   type='date' name='date_prod_fmq' />"+
+									"</div>"+
+
+							"<div class='modal-footer pers-footer'>"+
+							   " <button type='button' class='btn btn-secondary' data-dismiss='modal'>Annuler</button>"+
+								"<button id='btnEdit' class='btn-success'>Enregistrer</button>"+
+								
+							
+								
+						   " </div>"+
+					"</form>"+
+
+			   " </div>"+
+
+		   " </div>"+
+		"</div>"+
+	"</div>"
+	return m
+	}
+
+
+	function currentPage(page){
+		$('#page').val(page)
+	}
+
+	function search(){
+		var mc = $('#objet').val()
+		
+		 $.ajax({
+			method : "get",
+			url :"[[@{/gse/faitmarquants/search/}]]"+mc,
+			dataType : "json",
+			contentType : "application/json",
+			success : function(data){
+				
+				 var res="";
+				if(data.length==0){
+					res = "<p class='text-danger text-center' >Pas d'occurence trouvé pour ces conditions ! </p>"
+						$('#result').html(res);
+				}else{
+					for(i=0;i<data.length;i++){
+						res +="<tr> <td>"+data[i].code_fmq+"</td>" +
+									"<td>"+data[i].activite.object_act+"</td> " +
+									"<td>"+data[i].desc_fmq+"</td>" +
+									"<td>"+data[i].activite.direction.lib_dir+"</td>" +
+									"<td>"+data[i].date_liv_fmq+"</td>" +
+									"<td>"+data[i].date_prod_fmq+"</td>" +
+									"<td align='center'>" +
+										"<button type='button'  class='btn btn-info m-1 text-white'  onclick=\"openModal('"+data[i].code_fmq+"')\"   id="+data[i].code_fmq+" ><i class='fa fa-edit'></i></button>" +
+										"<div id='modalEdit'></div>"+
+									"</td>"
+					}
+				}
+				
+				$('#result').html(res) 
+				 
+				
+			},//success
+		})
+		console.log(mc)
+	}
+	</script>
+</div>
+
+
+<!-- excel -->
+<div th:fragment="excel">
+	<script >
+	/**
+	 * 
+	 */
+	/**
+	 * 
+	 */$(document).ready(function(){
+		
+		$('#export').click(()=>{
+			exporte()
+		})
+	})
+
+	//export des statistiques
+	function exportStatFmqResp(){
+		var per1 = $('#date3Fmq').val()
+	    var per2 = $('#date4Fmq').val()
+
+	    $.ajax({
+	        method : "get",
+	        url : "[[@{/gse/faitmarquants/stat/resp/}]]"+per1+"/"+per2,
+	        dataType : "json",
+	        contentType : "application/json",
+	        success : function(data){
+	        	
+	        	var temp = []
+				var legend = []
+				var score = []
+	        	var total =0
+				for(i=0;i<data.length;i++){
+					temp.push(data[i].split(","))
+				}
+				for(i=0;i<temp.length;i++){
+					legend.push(temp[i][0])
+					score.push(temp[i][1])	
+				}
+				
+				var res ="<tr>" +
+							"<th>Responsable</th>" +
+							"<th>Fréquence</th>" +
+						"</tr>"
+				for(i=0;i<legend.length;i++){
+					total += parseInt(score[i])
+					res +="<tr>" +
+							   "<td>"+legend[i].toUpperCase()+"</td>" +
+							    "<td>"+score[i]+"</td>" +
+						"</tr>"
+				}
+				res+="<tr>" +
+						"<th>Total</th>" +
+						"<td>"+total+"</td>" +
+					"</tr>"
+				date = new Date()
+				filename= "Stat//FaitMarquants//Resp/"+per1+"_"+per2
+				exportToExcel(res,filename)
+	        } //success
+	    })
+	}
+	function exportStatFmqDir(){
+		var per1 = $('#date1Fmq').val()
+	    var per2 = $('#date2Fmq').val()
+
+	    $.ajax({
+	        method : "get",
+			url : "[[@{/gse/faitmarquants/stat/dir/}]]"+per1+"/"+per2,
+	        dataType : "json",
+	        contentType : "application/json",
+	        success : function(data){
+	        	
+	        	var temp = []
+				var legend = []
+				var score = []
+	        	var total = 0
+				for(i=0;i<data.length;i++){
+					temp.push(data[i].split(","))
+				}
+				for(i=0;i<temp.length;i++){
+					legend.push(temp[i][0])
+					score.push(temp[i][1])	
+				}
+				
+				var res ="<tr>" +
+							"<th>Direction</th>" +
+							"<th>Fréquence</th>" +
+						"</tr>"
+				for(i=0;i<legend.length;i++){
+					total += parseInt(score[i])
+					res +="<tr>" +
+							   "<td>"+legend[i].toUpperCase()+"</td>" +
+							    "<td>"+score[i]+"</td>" +
+						"</tr>"
+				}
+				res+="<tr>" +
+						"<th>Total</th>" +
+						"<td>"+total+"</td>" +
+					"</tr>"
+				
+				
+				filename= "Stat//FaitMarquants//Dir/"+per1+"_"+per2
+				exportToExcel(res,filename)
+	        } //success
+	    })
+	}
+
+
+
+	function exporte(){
+		var date1 = $('#date1').val()
+		var date2 = $('#date2').val()
+		var size = $('#max-occur').val()
+		
+		page = parseInt($('#page').val())
+		if(page == NaN) page = 0 
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/faitmarquants/parDate/}]]"+date1+"/"+date2+"/"+page+"/"+size,
+			dataType : "json",
+			contentType: "application/json",
+			success : function (data){
+				var res = "<tr>" +
+								"<th>Référence</th>" +
+								"<th>Date </th>" +
+								"<th>Description</th>" +
+								"<th>Etat</th>" +
+						"</tr>"
+								for(i=0;i<data.content.length;i++){
+									res +="<tr> <td>"+data.content[i].code_fmq+"</td>" +
+												"<td>"+data.content[i].activite.object_act+"</td> " +
+												"<td>"+data.content[i].desc_fmq+"</td>" +
+												"<td>"+data.content[i].activite.direction.lib_dir+"</td>" +
+												"<td>"+data.content[i].date_liv_fmq+"</td>" +
+												"<td>"+data.content[i].date_prod_fmq+"</td>" +
+												"<td align='center'>" +
+													"<button type='button'  class='btn btn-info m-1 text-white' data-toggle = 'modal' data-target=\#"+data.content[i].code_fmq+" type='button'  id="+data.content[i].code_fmq+" ><i class='fa fa-edit'></i></button>" +
+												"</td>"
+								}
+				date = new Date()
+				filename= "FaitMarquants__"+date1+"_"+date2
+				exportToExcel(res,filename)
+			}
+		})
+	}
+
+	function exportToExcel(htmls,filename){
+
+	            var uri = 'data:application/vnd.ms-excel;base64,';
+	            var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="content-type" content="application/vnd.ms-excel;charset="utf-8"> <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'; 
+	            var base64 = function(s) {
+	                return window.btoa(unescape(encodeURIComponent(s)))
+	            };
+
+	            var format = function(s, c) {
+	                return s.replace(/{(\w+)}/g, function(m, p) {
+	                    return c[p];
+	                })
+	            };
+	            
+	            var ctx = {
+	                worksheet : 'Worksheet',
+	                table : htmls
+	            }
+
+
+	            var link = document.createElement("a");
+	            link.download = filename;
+	            link.href = uri + base64(format(template, ctx));
+	            link.click();
+	}
+	</script>
+</div>
+
+<!-- stat -->
+<div th:fragment="stat">
+	<script>
+	/**
+	 * 
+	 */
+	$(document).ready(function(){
+		$('#date4Fmq').change(()=>{
+			statFmqResp()
+		})
+		
+		
+		
+		$('#date2Fmq').change(()=>{
+			statFmqDir()
+		})
+
+	})
+
+	function statFmqDir(){
+		date1 = $('#date1Fmq').val()
+		date2 = $('#date2Fmq').val()
+		
+		$.ajax({
+			 method : "get",
+			 url : "[[@{/gse/faitmarquants/stat/dir/}]]"+date1+"/"+date2,
+			 dataType : "json",
+			 contentType : "application/json",
+			 success  : function(data){
+				 console.log(data)
+				 var temp = []
+					var legend = []
+					var score = []
+		        	
+					for(i=0;i<data.length;i++){
+						temp.push(data[i].split(","))
+					}
+					for(i=0;i<temp.length;i++){
+						legend.push(temp[i][0])
+						score.push(temp[i][1])	
+					}
+					
+					var chartdata = {
+					        labels: legend,
+					        datasets : [
+					          {
+					            label: 'Valeur',
+					            backgroundColor: 'rgb(182, 5, 43)',
+					            borderColor: 'rgb(253, 57, 165)',
+					            hoverBackgroundColor: 'rgb(253, 57, 165)',
+					            hoverBorderColor: 'rgb(253, 57, 165)',
+					            data: score
+					          }
+					        ]
+					      }
+
+					      var ctx = $("#mycanvas5");
+					      if(window.barGraphe != undefined){
+					    	  barGraphe.destroy()
+					      }
+					       window.barGraphe = new Chart(ctx, {
+					        type: 'bar',
+					        data: chartdata,
+					        options : {
+					        	scales : {
+					        		yAxes : [{
+					        			ticks : {
+					        				min : 0
+					        			}
+					        		}]
+					        	}
+					        }
+					        
+					      }) 
+			 } //success
+		 })
+	}
+	function statFmqResp(){
+		 date1 = $('#date3Fmq').val()
+		 date2 = $('#date4Fmq').val()
+		 
+		 $.ajax({
+			 method : "get",
+			 url : "[[@{/gse/faitmarquants/stat/resp/}]]"+date1+"/"+date2,
+			 dataType : "json",
+			 contentType : "application/json",
+			 success  : function(data){
+				 //console.log(data)
+				 var temp = []
+					var legend = []
+					var score = []
+		        	
+					for(i=0;i<data.length;i++){
+						temp.push(data[i].split(","))
+					}
+					for(i=0;i<temp.length;i++){
+						legend.push(temp[i][0])
+						score.push(temp[i][1])	
+					}
+					
+					var chartdata = {
+					        labels: legend,
+					        datasets : [
+					          {
+					            label: 'Valeur',
+					            backgroundColor: 'rgb(182, 5, 43)',
+					            borderColor: 'rgb(253, 57, 165)',
+					            hoverBackgroundColor: 'rgb(253, 57, 165)',
+					            hoverBorderColor: 'rgb(253, 57, 165)',
+					            data: score
+					          }
+					        ]
+					      }
+
+					      var ctx = $("#mycanvas6");
+					      if(window.barGraph != undefined){
+					    	  barGraph.destroy()
+					      }
+					       window.barGraph = new Chart(ctx, {
+					        type: 'horizontalBar',
+					        data: chartdata,
+					        options : {
+					        	scales : {
+					        		xAxes : [{
+					        			ticks : {
+					        				min : 0
+					        			}
+					        		}]
+					        	}
+					        }
+					        
+					      }) 
+			 } //success
+		 })
+	}
+
+	</script>
+</div>

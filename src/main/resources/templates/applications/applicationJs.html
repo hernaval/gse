@@ -1,0 +1,34 @@
+
+<head>
+<meta charset="utf-8">
+
+</head>
+
+<div th:fragment="init">
+	<script>
+	$(document).ready(function(){
+		$('#application').html("")
+		getApp()
+	})
+
+	function getApp(){
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/applications/getAll}]]",
+			dataType : "json",
+			contentType : "application/json",
+			success : function(data){
+				//console.log(data)
+				var res =""
+					for(i=0;i<data.length;i++){
+						res += "<div class='form-group'>"+
+						"<input class='form-control-sm' type='checkbox' value="+data[i].code_app+" name='application' />"+
+							"<label class='control-label m-2'>"+data[i].nom_app+"</label>"+
+						"</div>"
+					}
+				$('#application').html(res)
+			}
+		})
+	}
+	</script>
+</div>

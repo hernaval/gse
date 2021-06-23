@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>G S E | Login</title>
+    <th:block th:include="fragments/head :: head"></th:block>
+</head>
+<body>
+    <div  class="splash">
+        <div class="img-splash" id="img-splash">
+          
+        </div>
+        <div class="img-title " id="img-title">
+            <h4>G S E - Gestion de Suivi et Etude </h4>
+        </div>
+        <div class="img-loader " id="img-loader"></div>
+    </div> 
+    <div  th:style="'background : url('+@{/images/back.jpg}+') no-repeat;background-size : cover '" class="container-fluid backAuth  "id="page">
+			
+            <div class=" card  col-sm-6 col-md-8 col-lg-6 col-xl-4  formBody">
+            
+            <div class=" text-center card-header">AUTHENTIFICATION</div>
+            <div  class="card-body">
+            	<i style="margin-left:45%" class=" mb-2 text-center fas fa-user-circle fa-3x"></i>
+                <form th:action="@{/login}" method="post">
+						
+							
+                    <div class="form-group">
+                       
+                        <i class='fa fa-edit'></i><label class="text-muted" for="">Identifiant</label>
+                        <input  class="form-control formInput" type="text"  name="username" >
+                        
+                    </div>
+
+                    <div class="form-group">
+                           
+                            <i class='fa fa-lock'></i> <label class="text-muted" for="">Mot de passe</label>
+                            <input class="form-control formInput"  type="password" name="password" >
+                    </div>
+
+                    <input  style="width:100%" class="btn  btn-outline-default" type="submit" value="Connexion" />
+
+                </form>
+                </div> <!-- card body -->
+                </div>
+            </div>
+   
+
+    <script>
+      
+//         $(document).ready(function(){
+
+//           if(!sessionStorage.getItem("isVisited") ){ 
+//            splashScreen()
+//         }
+//         else{
+//             $('.splash').hide()
+//         }  
+        
+       
+
+//     })
+//         function splashScreen(){
+//             $('#page').addClass("hidden")
+//             $('#img-title').addClass("hidden")
+//            $('#img-splash').addClass("anim")
+//            setTimeout(function(){
+//                $('#img-title').removeClass("hidden")
+//                $('#img-title').addClass("typewriter")
+//            },1500)
+//            setTimeout(function(){
+//                $('#img-loader').addClass("ids-hourglass")
+//                setTimeout(function(){
+//                    $('#img-loader').removeClass("ids-hourglass")
+//                    $('.splash').hide()
+//                    $('#page').removeClass("hidden")
+//                    sessionStorage.setItem("isVisited","1")
+//                },1800) 
+//            },3500)
+//         }
+    </script>
+
+</body>
+</html>

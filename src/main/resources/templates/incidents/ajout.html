@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<meta charset="utf-8">
+<title>Incidents_ajout</title>
+<th:block th:include="fragments/head :: head"></th:block>
+
+<th:block th:include="applications/applicationJs :: init"></th:block>
+<th:block th:include="incidents/incidentJs :: validation"></th:block>
+<th:block th:include="/layoutJs :: statInit"></th:block>
+</head>
+<body>
+	<div class="card " layout:fragment="content">
+		<div class="ctrl" th:if="${addSuccess}">
+			<span th:text="${addSuccess}" class="notification animateOpen"></span>
+		</div>
+		
+		<h3 class="text-danger text-center mb-2 p-2">Nouvel incident</h3>
+
+		<div class="separator"></div>
+
+		<div class="container mt-2">
+			<form method="post" th:action="@{incidents/ajout}">
+				<div class="row">
+
+					<div class="col-lg-6">
+
+						<div class="form-group">
+							<label class="control-label">Référence</label> <input
+								class="form-control-sm" type="text" id="reference" name="code_inc" />
+								<small class="text-danger" id="ref_err"></small>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Description</label> <input
+								class="form-control" type="text" name="desc_inc" />
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Cause</label> <input
+								class="form-control" type="text" name="cause_inc" />
+						</div>
+
+						<h5>Sujet concerné</h5>
+						<div class="row m-2">
+							<div class="form-group">
+								<input class="form-control-sm" type="checkbox" value="metier"
+									name="util_imp_inc" /> <label class="control-label">Métier</label>
+							</div>
+
+							<div class="form-group">
+								<input class="form-control-sm" type="checkbox" value="agence"
+									name="utli_imp_inc" /> <label class="control-label">Agence</label>
+							</div>
+
+							<div class="form-group">
+								<input class="form-control-sm" type="checkbox" value="client"
+									name="util_imp_inc" /> <label class="control-label">Client</label>
+							</div>
+						</div>
+
+						<h5>Application impactée</h5>
+						<div id="application" class="row m-2">
+							<!-- initialisté en javascript js/applications/init.js -->
+						</div>
+
+						<div class="form-group">
+							<input id="perte_int" class="" type="checkbox" /> <label
+								class="control-label">Perte interne</label>
+						</div>
+
+						<div id="valeur" class="form-group">
+							<label class="control-label">Valeur</label> <input
+								id="perte_value"  value="0" class="form-control-md" type="text"
+								name="perte_interne" /> <span class="text-danger"
+								id="number_validation"></span>
+						</div>
+
+
+
+					</div>
+					<!-- lg 5 -->
+
+					<div class="col-lg-6">
+
+						<div class='row'>
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label class="control-label">Date début </label> <input
+										id="dateDebut" class="form-control-sm" type="date"
+										name="date_deb_inc" /> <span class="text-danger"
+										id="date_err"></span>
+								</div>
+							</div>
+
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label class="control-label">Heure début</label> <input
+										class="form-control-sm" type="time" name="heure_deb_inc" />
+								</div>
+							</div>
+
+						</div>
+
+
+						<div class="row">
+
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label class="control-label">Date fin </label> <input
+										id="dateFin" class="form-control-sm" type="date"
+										name="date_fin_inc" />
+								</div>
+							</div>
+
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label class="control-label">Heure fin</label> <input
+										class="form-control-sm" type="time" name="heure_fin_inc" />
+								</div>
+							</div>
+
+
+
+
+
+
+
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Conséquence</label> <input
+								class="form-control" type="text" name="consequence_inc" />
+						</div>
+
+						<div class="form-group">
+							<label class="control-label">Sous catégorie de risque</label> <input
+								class="form-control" type="text" name="sous_cat_risk" />
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label">Résumé du plan d'action</label> <input
+								class="form-control" type="text" name="echeance" />
+						</div>
+
+
+						<div class="ml-auto">
+							<input class="btn btn-outline-primary  mr-3" type="submit"
+								value="ajouter" />
+						</div>
+
+					</div>
+					<!-- lg 5 -->
+				</div>
+				<!-- row  -->
+
+
+
+
+
+			</form>
+		</div>
+		<!-- container -->
+
+
+
+
+
+	</div>
+	<!-- card -->
+</body>
+</html>

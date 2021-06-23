@@ -1,0 +1,729 @@
+<head>
+	<meta charset="utf-8"/>
+</head>
+
+<div th:fragment="filter">
+	<script>
+	$(document).ready(function(){
+		//loader hide
+		
+		$('.sp-bars').hide()
+		currentPage(0)
+		//filtre par interval de date
+		$('#intervalBtn').click(()=>{
+			initLoader()
+			setTimeout(function(){
+				finishLoader()
+				dateFilter()
+			},1500)
+			
+		})
+		
+		//recherche d'objet
+		$('#objet').keyup(()=>{
+			initLoader()
+			setTimeout(function(){
+				finishLoader()
+				search();
+			},345)
+		
+		})
+
+		$('#max-occur').change(()=>{
+
+			initLoader()
+			var size = $('#max-occur').val()
+			setTimeout(function(){
+				finishLoader()
+				if( $('#date1').val() =='' && $('#date2').val() =='')
+				{
+				window.location.href = "activites?page=1&size="+size
+			
+				}else{
+				
+				dateFilter(0,size)
+				}
+			},1500)
+
+		})
+		
+		
+		
+		
+		
+	})
+
+	function initLoader(){
+		$('#result').addClass("hidden")
+		$('.sp-bars').fadeIn(300)
+	}
+	function finishLoader(){
+		$('.sp-bars').fadeOut(200)
+		$('#result').removeClass("hidden")
+	}
+
+	function search(){
+		var mc = $('#objet').val()
+									
+		$('#result').html("")
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/activites/search/}]]"+mc ,
+			dataType : "json",
+			contentType : "application/json",
+			success : function (data){
+				//.log(data)
+				var res="";
+				if(data.length==0){
+					res = "<p class='text-danger text-center' >Pas d'occurence trouvé pour ces conditions ! </p>"
+						$('#result').html(res);
+				}
+				else{
+				for(i=0;i<data.length;i++){
+					
+					//console.log(data[i])
+					 res += "<tr> <td>"+data[i].date_act+"</td>" +
+									"<td>"+data[i].direction.lib_dir+"</td> " +
+									"<td>"+data[i].caract_act+"</td> " +
+									"<td>"+data[i].object_act+"</td> " +
+									"<td>"+data[i].responsable.nom_resp+"</td>" +
+									"<td>"+data[i].editeur.nom_resp+"</td>" +
+									"<td>"+data[i].data_liv_act+"</td> " +
+									"<td id="+data[i].etat_act+" >"+data[i].etat_act+"</td> 	" +
+									"<td>"+data[i].obs_act+"</td> " +
+									"<td>"+data[i].type_dmd+"</td> " +
+									"<td align='center'>" +
+									"<button type='button' class='btn btn-info  ' onclick=\"openModal('"+data[i].code_act+"')\" > <i class='fa fa-edit'></i> </button> " +
+									"<div id='modalEdit'></div>"+
+									"<a id=etat"+data[i].etat_act+" href=\"activites/req?action=terminer&code_act="+data[i].code_act+" \"  class='btn btn-success text-white'>T</a>   " +
+									"</td> " +
+							" </tr>"
+										
+					
+				}
+				
+				$('#result').html(res)
+				$('#modalEdit').html(modal())
+
+				getStateProperty()
+				
+				} //else
+				
+				
+				
+			}
+		})
+	}
+	function getDirection(){
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/directions/getAll}]]",
+			dataType : "json",
+			contentType : "application/json",
+			success : function (data){
+				var res = "Direction / Service Demandeur<select class='form-control' name='direction'> "
+				
+				for(i=0;i<data.length;i++){
+					res += "<option value='"+data[i].code_dir+"'>"+data[i].code_dir.toUpperCase()+"</option> "
+				}
+				res +="</select>"
+				
+					//console.log(res)
+				$('[id=selectDir]').html(res)
+				$('[id=selectDir2]').html(res)
+				
+				
+			}
+		})
+	}
+	function openModal(data){
+		
+		getDirection()
+		fill(data)
+		$('#testModal').modal('show')
+		
+	}
+	function fill(ref){
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/activites/checkRef/}]]"+ref ,
+			dataType : "json",
+			contentType : "application/json",
+			success : function (data){
+				$('#ref').html(data.code_act)
+				$('#date_act').val(data.date_act)
+				$('#code_act').val(data.code_act)
+				$('#object_act').val(data.object_act)
+				$('#etat_act').val(data.etat_act)
+				$('#responsable').val(data.responsable.code_resp)
+				$('#data_liv_act').val(data.data_liv_act)
+				$('#obs_act').val(data.obs_act)
+				
+			}
+		})
+	}
+	function modal(){
+		 m = "<div class='modal fade' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' "+
+		 " aria-hidden='true' id='testModal'>"+
+		 "<div class='modal-dialog modal-lg ' role='document'>"+
+			 "<div class='modal-content '>"+
+
+				 "<div class='modal-header pers-header'>"+
+					 "<h5 class='modal-title'>"+
+						 " <i class='fas fa-edit text-info'></i>  Modification N° <span class='text-danger' id='ref' ></span>"+
+					 "</h5>"+
+					 "<button type='button' class='close' data-dismisss='modal' aria-label='Close'>"+
+						 "<span aria-hidden='true'>&times;</span>"+
+					 "</button>"+
+				 "</div>"+
+
+				 "<div class='modal-body'>"+
+
+					 "<form th:action='@{/gse/activites/modification}' method='post'>"+
+						 "<div class='container text-left'>"+
+									 
+								" <div class='row'>"+
+								 
+								 "</div>"+
+									 "<div class='form-group'>"+
+										 "<label class='control-label'></label> <input class='form-control-sm' id='code_act'   type='hidden' name='code_act' />"+
+									 "</div>"+
+
+									 
+									 "<div class='form-group'>"+
+										 "<label class='control-label'>Description</label>"+
+										 "<textarea class='form-control' id='object_act'  name='object_act'></textarea>"+
+									 "</div>"+
+
+									 "<div class='form-group'>"+
+										 " Type de Demande <select class='form-control' name='type_dmd'>"+
+											 "<option value='requête'>Requête(REQ)</option>"+
+											 "<option value='projet'>Projet</option>"+
+											 "<option value='chantier'>Chantier</option>"+
+										 "</select>"+
+									 "</div>"+
+
+									 
+									 "<div class='form-group'>"+
+										 "Caractéristique <select class='form-control'  name='caract_act'>"+
+											 "<option value='n'>Nouveau</option>"+
+											 "<option value='m'>Modif</option>"+
+											 "<option value='r'>Répétitif</option>"+
+										 "</select>"+
+									 "</div>"+
+
+									 "<div id='selectDir2' class='form-group'>"+
+										 "Direction <select id='direction' class='form-control' name='direction'>"+
+											 "<option value='org'>ORG</option>"+
+											 "<option value='cmd'>CMD</option>"+
+										" </select>"+
+									" </div>"+
+										 
+									  "<input class='form-control-sm' id='date_act'  type='hidden' name='date_act' />"+
+										 
+									 "<input class='form-control-sm' id='etat_act' type='hidden' name='etat_act' />"+
+									 "<input class='form-control-sm' id='responsable'  type='hidden' name='responsable' /> "+
+
+									 "<div class='form-group'>"+
+										" <label class='control-label'>Date de Livraison</label> <input class='form-control-sm'' id='data_liv_act' type='date' name='data_liv_act' />"+
+									 "</div>"+
+
+									 
+									 "<div class='form-group'>"+
+										 "<label class='control-label'>Observation</label>"+
+										 "<textarea class='form-control' id='obs_act'   name='obs_act'> </textarea>"+
+									 "</div>"+
+
+									 
+
+							 "</div>"+
+
+							 "<div class='modal-footer pers-footer'>"+
+								" <button type='button' class='btn btn-secondary' data-dismiss='modal'>Annuler</button>"+
+								 "<button id='btnEdit' class='btn-success'>Enregistrer</button>"+
+								 
+							 
+								 
+							" </div>"+
+					 "</form>"+
+
+				" </div>"+
+
+			" </div>"+
+		 "</div>"+
+	 "</div>"
+	 return m
+	}
+
+	function getStateProperty(){
+		/*var ids = $('.etat').map(function(){
+			return this.id
+		}).get()*/
+		$('[id=ok]').addClass("badge badge-pill badge-success")
+		$('[id=ko]').addClass("badge badge-pill badge-danger")
+		//configuration t
+		$('[id=etatok]').css("display","none")
+		
+		
+	}
+
+
+
+	function dateFilter(page=0,size=3){ //page 0 and size 3
+		//suppression de l'ancien pagination
+		$('#pagination').html("")
+		
+		var date1 = $('#date1').val()
+		var date2 = $('#date2').val()
+									
+		$('#result').html("")
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/activites/parDate/}]]"+date1+"/"+date2+"/"+page+"/"+size,
+			dataType : "json",
+			contentType : "application/json",
+			success : function (data){
+				//console.log(data.content[0].code_act)
+				
+				var res="";
+				if(data.content.length==0){
+					res = "<p class='text-danger text-center' >Pas d'occurence trouvé pour ces conditions ! </p>"
+						$('#result').html(res);
+				}
+				else{
+				for(i=0;i<data.content.length;i++){
+		
+					 res += "<tr> <td>"+data.content[i].date_act+"</td>" +
+									"<td>"+data.content[i].direction.lib_dir+"</td> " +
+									"<td>"+data.content[i].caract_act+"</td> " +
+									"<td>"+data.content[i].object_act+"</td> " +
+									"<td>"+data.content[i].responsable.nom_resp+"</td>" +
+									"<td>"+data.content[i].editeur.nom_resp+"</td>" +
+									"<td>"+data.content[i].data_liv_act+"</td> " +
+									"<td id="+data.content[i].etat_act+"  >"+data.content[i].etat_act+"</td> 	" +
+									"<td>"+data.content[i].obs_act+"</td> " +
+									"<td>"+data.content[i].type_dmd+"</td> " +
+									"<td align='center'>" +
+									"<button type='button' class='btn btn-info' data-toggle='modal'  onclick=\"openModal('"+data.content[i].code_act+"')\"  > <i class='fa fa-edit'></i> </button>" +
+									"<div id='modalEdit'></div>" +
+									"<a id=etat"+data.content[i].etat_act+" href=\"activites/req?action=terminer&code_act="+data.content[i].code_act+" \"  class='btn btn-success text-white'>T</a> " +
+									"</td>" +
+							"  </tr>"
+					
+				}
+				$('#result').html(res)
+				$('#modalEdit').html(modal())
+				getStateProperty()
+				//pagination
+				var paginate = ""
+					for(i=0;i<data.totalPages;i++){
+						size = $('#max-occur').val()
+						paginate += "<li>" +
+								"<button  id="+i+" onclick=\"action("+i+","+size+")\"  class='btn btn-sm btn-outline-info mr-2 p-2  '  > " +(i+1)
+								"</button>" +
+								"</li>"
+					}
+				$('#pagination').html(paginate)
+				
+				} 
+				//else
+			}
+		})
+	}
+
+	function action(i,size){
+		initLoader()
+		setTimeout(function(){
+			finishLoader()
+			dateFilter(i,size)
+			currentPage(i)
+		},900)
+		
+	}
+	function currentPage(page){
+		$('#page').val(page)
+		$('#'+page).css('color','red')
+	}
+
+	//
+	</script>
+</div>
+
+
+<!-- validation js -->
+<div th:fragment="validation">
+	<script>
+	/**
+	 * 
+	 */
+	$(document).ready(function(){
+		
+		//date validation
+		$('#date_liv_act').change(()=>{
+			checkDate()
+		})
+		$('#reference').focusout(()=>{
+			checkRef()
+		})
+	})
+
+	function checkDate(){
+			var  date = new Date()
+			var today = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()
+			//console.log(today)
+			var current = $('#date_liv_act').val()
+			current = new Date(current)
+			if(current < date) {
+				$('#date_err').html("Veuillez ne pas ajouter une date ultérieure  ")
+			}else{
+				$("#date_err").html("")
+			}
+	}
+
+	function checkRef(){
+		var ref= $('#reference').val()
+		
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/activites/checkRef/}]]"+ref,
+			dataType : "json",
+			contentType : "application/json",
+			success : function(data){
+				if(data != null){
+					$('#reference').focus()
+					$('#ref_err').html("Référence activité existant ! ")
+				}
+				else{
+					$('#ref_err').html("")
+				}
+			},
+			error : function(){
+				console.log("error")
+			}
+		})
+	}
+
+
+	</script>
+</div>
+
+<!-- excel js -->
+<div th:fragment="excel">
+	<script >
+	$(document).ready(function(){
+		
+		$('#export').click(()=>{
+			exporte()
+		})
+	})
+
+	function exportStatResp(){
+		var per1 = $('#per3').val()
+	    var per2 = $('#per4').val()
+
+	    $.ajax({
+	        method : "get",
+	        url : "[[@{/gse/activites/stat/resp/}]]"+per1+"/"+per2,
+	        dataType : "json",
+	        contentType : "application/json",
+	        success : function(data){
+	        	
+	        	var temp = []
+				var legend = []
+				var score = []
+	        	var total =0
+				for(i=0;i<data.length;i++){
+					temp.push(data[i].split(","))
+				}
+				for(i=0;i<temp.length;i++){
+					legend.push(temp[i][0])
+					score.push(temp[i][1])	
+				}
+				
+				var res ="<tr>" +
+							"<th>Responsable</th>" +
+							"<th>Fréquence</th>" +
+						"</tr>"
+				for(i=0;i<legend.length;i++){
+					total += parseInt(score[i])
+					res +="<tr>" +
+							   "<td>"+legend[i].toUpperCase()+"</td>" +
+							    "<td>"+score[i]+"</td>" +
+						"</tr>"
+				}
+				res+="<tr>" +
+						"<th>Total</th>" +
+						"<td>"+total+"</td>" +
+					"</tr>"
+				date = new Date()
+				filename= "Stat//Activites//Resp/"+per1+"_"+per2
+				exportToExcel(res,filename)
+	        } //success
+	    })
+	}
+	function exportStatDir(){
+		var per1 = $('#per1').val()
+	    var per2 = $('#per2').val()
+
+	    $.ajax({
+	        method : "get",
+	        url : "[[@{/gse/activites/stat/dir/}]]"+per1+"/"+per2,
+	        dataType : "json",
+	        contentType : "application/json",
+	        success : function(data){
+	        	
+	        	var temp = []
+				var legend = []
+				var score = []
+	        	var total = 0
+				for(i=0;i<data.length;i++){
+					temp.push(data[i].split(","))
+				}
+				for(i=0;i<temp.length;i++){
+					legend.push(temp[i][0])
+					score.push(temp[i][1])	
+				}
+				
+				var res ="<tr>" +
+							"<th>Direction</th>" +
+							"<th>Fréquence</th>" +
+						"</tr>"
+				for(i=0;i<legend.length;i++){
+					total += parseInt(score[i])
+					res +="<tr>" +
+							   "<td>"+legend[i].toUpperCase()+"</td>" +
+							    "<td>"+score[i]+"</td>" +
+						"</tr>"
+				}
+				res+="<tr>" +
+						"<th>Total</th>" +
+						"<td>"+total+"</td>" +
+					"</tr>"
+				
+				
+				filename= "Stat//Activites//Dir/"+per1+"_"+per2
+				exportToExcel(res,filename)
+	        } //success
+	    })
+	}
+
+	function exporte(){
+		var date1 = $('#date1').val()
+		var date2 = $('#date2').val()
+		var size = $('#max-occur').val()
+		
+		page = parseInt($('#page').val())
+		if(page == NaN) page = 0 
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/activites/parDate/}]]"+date1+"/"+date2+"/"+page+"/"+size,
+			dataType : "json",
+			contentType: "application/json",
+			success : function (data){
+				var res = "<tr>" +
+								"<th>Date</th>" +
+								"<th>Demandeur</th>" +
+								"<th>Caractéristique</th>" +
+								"<th>Objet</th>" +
+								"<th>Responsable</th>" +
+								"<th>Modif</th>" +
+								"<th>Date de livraison</th>" +
+								"<th>Observation</th>" +
+								"<th>Type de demande</th>" +
+								"<th>Etat</th>" +
+							
+						"</tr>"
+				for(i=0;i<data.content.length;i++){
+					
+					 res += "<tr> <td>"+data.content[i].date_act+"</td>" +
+									"<td>"+data.content[i].direction.lib_dir+"</td> " +
+									"<td>"+data.content[i].caract_act+"</td> " +
+									"<td>"+data.content[i].object_act+"</td> " +
+									"<td>"+data.content[i].responsable.nom_resp+"</td>" +
+									"<td>"+data.content[i].editeur.nom_resp+"</td>" +
+									"<td>"+data.content[i].data_liv_act+"</td> " +
+									"<td id="+data.content[i].etat_act+"  >"+data.content[i].etat_act+"</td> 	" +
+									"<td>"+data.content[i].obs_act+"</td> " +
+									"<td>"+data.content[i].type_dmd+"</td> " +
+								
+							"  </tr>"
+					
+				}
+			
+				filename= "Activites/"+date1+"_"+date2
+				exportToExcel(res,filename)
+			}
+		})
+	}
+
+	function exportToExcel(htmls,filename){
+
+	            var uri = 'data:application/vnd.ms-excel;base64,';
+	            var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="content-type" content="application/vnd.ms-excel;charset="utf-8"> <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'; 
+	            var base64 = function(s) {
+	                return window.btoa(unescape(encodeURIComponent(s)))
+	            };
+
+	            var format = function(s, c) {
+	                return s.replace(/{(\w+)}/g, function(m, p) {
+	                    return c[p];
+	                })
+	            };
+	            
+	            var ctx = {
+	                worksheet : 'Worksheet',
+	                table : htmls
+	            }
+
+
+	            var link = document.createElement("a");
+	            link.download = filename;
+	            link.href = uri + base64(format(template, ctx));
+	            link.click();
+	}
+	</script>
+</div>
+
+<!-- stat -->
+<div th:fragment="stat">
+	<script>
+	/**
+	 * 
+	 */
+	$(document).ready(function(){
+		
+	    $('#per2').change(()=>{
+	    	statActParDir()
+	    })
+	    
+	    $('#per4').change(()=>{
+	        statActParResp()
+	    })
+	    
+	})
+
+
+
+	function statActParResp(){
+	    var per1 = $('#per3').val()
+	    var per2 = $('#per4').val()
+
+	    $.ajax({
+	        method : "get",
+	        url : "[[@{/gse/activites/stat/resp/}]]"+per1+"/"+per2,
+	        dataType : "json",
+	        contentType : "application/json",
+	        success : function(data){
+	        	
+	        	var temp = []
+				var legend = []
+				var score = []
+	        	
+				for(i=0;i<data.length;i++){
+					temp.push(data[i].split(","))
+				}
+				for(i=0;i<temp.length;i++){
+					legend.push(temp[i][0])
+					score.push(temp[i][1])	
+				}
+				
+				var chartdata = {
+				        labels: legend,
+				        datasets : [
+				          {
+				            label: 'Valeur',
+				            backgroundColor: 'rgb(182, 5, 43)',
+				            borderColor: 'rgb(253, 57, 165)',
+				            hoverBackgroundColor: 'rgb(253, 57, 165)',
+				            hoverBorderColor: 'rgb(253, 57, 165)',
+				            data: score
+				          }
+				        ]
+				      };
+
+				      var ctx = $("#mycanvas3");
+				      if(window.barGraph != undefined ){
+				    	  window.barGraph.destroy()
+				      }
+				      window.barGraph = new Chart(ctx, {
+				        type: 'horizontalBar',
+				        data: chartdata,
+				        options : {
+				        	scales : {
+				        		xAxes : [{
+				        			ticks : {
+				        				min : 0
+				        			}
+				        		}]
+				        	}
+				        }
+				      });
+				      
+				
+	        } //success
+	    })
+	}
+
+	function statActParDir(){
+	    var per1 = $('#per1').val()
+	    var per2 = $('#per2').val()
+
+	    $.ajax({
+	        method : "get",
+	        url : "[[@{/gse/activites/stat/dir/}]]"+per1+"/"+per2,
+	        dataType : "json",
+	        contentType : "application/json",
+	        success : function(data){
+	        	
+	        	var temp = []
+				var legend = []
+				var score = []
+	        	
+				for(i=0;i<data.length;i++){
+					temp.push(data[i].split(","))
+				}
+				for(i=0;i<temp.length;i++){
+					legend.push(temp[i][0])
+					score.push(temp[i][1])	
+				}
+				
+				var chartdata = {
+				        labels: legend,
+				        datasets : [
+				          {
+				            label: 'Valeur',
+				            backgroundColor: 'rgb(182, 5, 43)',
+				            borderColor: 'rgb(253, 57, 165)',
+				            hoverBackgroundColor: 'rgb(253, 57, 165)',
+				            hoverBorderColor: 'rgb(253, 57, 165)',
+				            data: score
+				          }
+				        ]
+				      };
+
+				      var ctx = $("#mycanvas");
+				      
+				      if(window.barGraphe != undefined){
+				    	  window.barGraphe.destroy()
+				      }
+				      
+				      window.barGraphe = new Chart(ctx, {
+				        type: 'bar',
+				        data: chartdata,
+				        options : {
+				        	scales : {
+				        		yAxes : [{
+				        			ticks : {
+				        				min : 0
+				        			}
+				        		}]
+				        	}
+				        }
+				      });
+				
+	        } //success
+	    })
+
+	}
+	</script>
+</div>

@@ -1,0 +1,249 @@
+@CHARSET "utf-8";
+
+.sp-bars {
+	position: relative;
+	top: 100px;
+  left: 45%;
+  z-index : 1001
+}
+
+.loader{
+  position : fixed;
+  top :40%;
+  left : 50%
+}
+
+.sp-bars, .loader{
+  width: 10px;
+	height: 30px;
+	border: 1px #000 solid;
+	background-color: rgba(175, 25, 25, 0.75);
+	-webkit-animation: spBars 1s infinite linear;
+}	
+
+
+
+.loader:after, .sp-bars:after, .sp-bars:before,.loader:before{
+        content : '';
+        position : absolute;
+        width : inherit;
+        height:  inherit;
+        border: inherit;
+        background-color: inherit;
+        top : -1px;
+      }
+      .loader:before,.sp-bars:before{
+        left : -20px;
+        -webkit-animation: spBarsBefore 1s infinite linear;
+        animation :  spBarsBefore 1s infinite linear;
+         
+      }
+      .loader:after, .sp-bars:after{
+        right : -20px;
+        -webkit-animation: spBarsAfter 1s infinite linear;
+        animation :  spBarsAfter 1s infinite linear;
+         
+      }
+      @keyframes spBarsBefore {
+        0%{
+          transform: scale(1,1);
+        }
+        25%{
+          transform: scale(1,1.25);
+        }
+        50%{
+          transform: scale(1,0.75);
+        }
+        75%{
+          transform: scale(1,1);
+        }
+        100%{
+          transform: scale(1,1);
+        }
+
+      }
+      @keyframes spBars {
+        0%{
+          transform: scale(1,1);
+        }
+        25%{
+          transform: scale(1,1);
+        }
+        50%{
+          transform: scale(1,1.25);
+        }
+        75%{
+          transform: scale(1,1);
+        }
+        100%{
+          transform: scale(1,1);
+        }
+
+      }
+      @keyframes spBarsAfter{
+        0%{
+          transform: scale(1,1);
+        }
+        25%{
+          transform: scale(1,1);
+        }
+        50%{
+          transform: scale(1,0.75);
+        }
+        75%{
+          transform: scale(1,1.25);
+        }
+        100%{
+          transform: scale(1,1);
+        }
+
+      }
+      #loader{
+        background : #27ae60;
+        width: 100%;
+        height :100%
+      }
+
+      .hidden{
+        opacity : 0;
+      }
+      .opening{
+       
+        animation :  onOpen 500ms 1 linear ;
+      }
+  @-webkit-keyframes onOpen{
+    from{
+      opacity :0
+    }to{
+      opacity : 1
+    }
+  }
+@media only screen and (max-width:500px) {
+	.sp-bars {
+		top: 125px
+	}
+}
+/*logout*/
+.ids-hourglass{
+  display : inline-block;
+  width: 80px;
+  height: 80px;
+}
+
+.ids-hourglass:after{
+  content :"";
+  display:  block;
+  border-radius: 50%;
+  width:0;
+  height: 0;
+
+  box-sizing : border-box;
+  border: 32px solid rgba(175, 25, 25, 0.75);;
+  border-color : rgba(175, 25, 25, 0.75) transparent rgb(175, 25, 25) transparent ;
+  animation : ids 1.2s infinite;
+  
+}
+@keyframes ids{
+  0%{
+    transform: rotate(0);
+    animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  }
+  50%{
+    transform: rotate(900);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  100%{
+    transform: rotate(1800deg);
+  }
+}
+
+/*animation entrance*/
+.splash{
+ 
+}
+
+.img-loader{
+  position : fixed;
+  left : 45%;
+  top : 60%;
+}
+
+
+
+.img-splash{
+  position : fixed;
+  left : 40%;
+  top : 10%;
+  
+}
+
+.anim{
+  -webkit-animation: mount 1.3s 1 forwards;
+}
+.img-title{
+  font-size : 18px;
+  position : fixed;
+  left : 35%;
+  top : 50%;
+  margin-top : 10px;
+  margin-right : 5px;
+  width : 350px;
+  height: 30px;
+  overflow-y : hidden;
+  overflow-x : hidden;
+  white-space: nowrap;
+ 
+}
+@media only  screen and (max-width:550px){
+  .img-splash{
+    left : 40%;
+    overflow: hidden;
+  }
+  .img-splash img {
+    width : 50%;
+    height : 50%;
+    
+  }
+  .img-title{
+    top : 45%;
+     left : 13%;
+  }
+  .img-loader{
+    top : 65%;
+    left : 43%;
+    width : 80%;
+  }
+}
+.typewriter{
+  -webkit-animation: write 3.1s steps(44) both,
+                      blinkCursor 500ms steps(44) infinite forwards;
+}
+@-webkit-keyframes mount{
+  from{
+    transform: translateY(200%);
+  }
+  to {
+    transform: translateY(0%);
+    transform: scale(1.1);
+    
+    /*box-shadow: 0px 3px 10px rgba(0,0,0,0.4);*/
+  }
+}
+@-webkit-keyframes write{
+  from{
+    width: 0px;
+    
+  }
+  to{
+    width : 350px;
+    
+  }
+}
+@-webkit-keyframes blinkCursor{
+  from{
+    border-right: 3px solid rgb(133, 15, 50) ;
+  }
+  to{
+    border-right : 2px solid transparent;
+  }
+}

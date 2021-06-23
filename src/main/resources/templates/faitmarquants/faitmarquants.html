@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<meta charset="utf-8" />
+<title>G S E | Faits Marquants</title>
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" media="all" th:href="@{/css/loader.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
+<link rel="stylesheet"
+	th:href="@{/css/fontawesome-free-5.11.2-web/css/all.css}">
+<link rel="stylesheet"
+	th:href="@{/css/fontawesome-free-5.11.2-web/css/regular.css}">
+<link rel="stylesheet" th:href="@{/css/Chart.min.css}">
+<script th:src="@{/js/assets/jquery-3.1.0.js}"></script>
+<script th:src="@{/js/assets/popper.min.js}"></script>
+<script th:src="@{/js/assets/bootstrap.bundle.js}"></script>
+<script th:src="@{/js/assets/Chart.min.js}"></script>
+<script th:src="@{/js/loader.js}"></script>
+
+<th:block th:include="faitmarquants/faitmarquantJs :: filter"></th:block>
+<th:block th:include="directions/directionJs :: init"></th:block>
+<th:block th:include="faitmarquants/faitmarquantJs :: excel"></th:block>
+
+<th:block th:include="/layoutJs :: statInit"></th:block>
+
+<style>
+td:nth-child(0) {
+	width: 30%;
+}
+
+td {
+	font-size: 13px;
+}
+
+
+</style>
+
+</head>
+<body>
+
+	<div layout:fragment="content" class="card p-2">
+		<div class="ctrl" th:if="${addSuccess}">
+			<span th:text="${addSuccess}" class="notification animateOpen"></span>
+		</div>
+		<div class="card-header panel-activity">
+			<i class="fa fa-check"></i> <span class="text-panel"> Faits Marquants </span>
+		</div>
+
+		<div class="card-body">
+
+			<div th:replace="fragments/filter :: filtre" id="liste" class="container-fluid">
+				
+				</div>
+				<div  class="sp-bars" ></div>
+				
+				<table class="table table-responsive table-bordered table-sm">
+					<thead class="bg-dark text-white">
+						<tr class="text-center">
+							<th>Référence</th>
+							<th>Intitulé du projet</th>
+							<th>Description</th>
+							<th>Demandeur</th>
+							<th>Date de livraison</th>
+
+							<th>Date Prod</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+
+					<tbody id="result">
+						<tr th:each="fmq:${faitmarquants}">
+						<td th:text="${fmq.code_fmq}"></td>
+							<td th:text="${fmq.activite.getObject_act()}"></td>
+							<td th:text="${fmq.desc_fmq}"></td>
+							<td th:text="${fmq.activite.direction.getLib_dir()}"></td>
+							<td th:text="${fmq.date_liv_fmq}"></td>
+							<td th:text="${fmq.date_prod_fmq}"></td>
+							<td align="center">
+								<button type="button" class="btn  btn-info text-white"
+									data-toggle="modal"
+									th:attr="data-target='#'+${fmq.code_fmq} "><i class="fa fa-edit" ></i>
+								</button> 
+								<div th:replace="faitmarquants/modalEditFmq :: modal"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<nav>
+				<ul class="pagination" id="pagination">
+					<li class="page-item" th:each="pa,status:${pages}"><a
+						th:href="@{faitmarquants(page=${status.index}+1,size=${size})}"
+						th:text="${status.index}+1" class="page-link"></a></li>
+				</ul>
+			</nav>
+			<input type="hidden" id="page">
+
+
+		</div>
+		<!-- card body -->
+	</div>
+	<!-- card -->
+</body>
+</html>

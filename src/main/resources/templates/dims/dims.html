@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+
+<head>
+<meta charset="utf-8">
+<title>G S E | Dim</title>
+<th:block th:include="fragments/head :: head"></th:block>
+
+
+<th:block th:include="dims/dimJs :: filter"></th:block>
+
+
+<th:block th:include="directions/directionJs :: init"></th:block>
+<th:block th:include="dims/dimJs :: excel"></th:block>
+<th:block th:include="/layoutJs :: statInit"></th:block>
+
+<style>
+td {
+	font-size: 13px;
+}
+</style>
+
+
+</head>
+
+<body>
+	<div class="card" layout:fragment="content">
+
+		<div class="card-header panel-dim">
+			<i class="fa fa-wrench"></i> <span class="text-panel"> Demande
+				d'intervention de maintenance </span> <a th:href="@{/gse/ajoutDims}"
+				class="btn btn-outline-primary floating pulse "><i
+				class="fa fa-plus  "></i></a>
+		</div>
+
+		<div class="card-body">
+
+			<div th:insert="fragments/filter :: filtre" class="container">
+
+			</div>
+
+			<div class="sp-bars"></div>
+			<table class="table table-responsive table-bordered table-sm">
+				<thead class=" bg-dark text-white">
+					<tr>
+
+						<th>Référence</th>
+						<th>Date</th>
+						<th>Description</th>
+						<th>Etat</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+
+				<tbody id="result">
+					<tr th:each="dim:${listDim}">
+
+						<td th:text="${dim.code_dim}"></td>
+						<td th:text="${dim.date_dim}"></td>
+						<td th:text="${dim.desc_dim}"></td>
+						<td th:switch="${dim.etat_dim}"><span th:case="'en cours'"
+							th:text="${dim.etat_dim}" th:class="'badge badge-danger'"></span>
+							<span th:case="'livré'" th:text="${dim.etat_dim}"
+							th:class="'badge badge-success'"></span> <span
+							th:case="'clôturé'" th:text="${dim.etat_dim}"
+							th:class="'badge badge-warning'"></span></td>
+						<td align="center">
+							<button type="button" class="btn  btn-info text-white"
+								data-toggle="modal" th:attr="data-target='#'+${dim.code_dim} ">
+								<i class="fa fa-edit"></i>
+							</button> <!--modal edit-->
+							<div th:replace="dims/modalEditDim :: modal"></div> <!--modal edit-->
+						</td>
+
+					</tr>
+				</tbody>
+
+			</table>
+		</div>
+
+		<nav>
+			<ul class="pagination" id="pagination">
+				<li class="page-item" th:each="pa,status:${pages}"><a
+					th:href="@{dims(page=${status.index}+1,size=${size})}"
+					th:text="${status.index}+1" class="page-link"></a></li>
+			</ul>
+		</nav>
+		<input type="hidden" id="page" />
+
+	</div>
+	<!-- card body -->
+
+	<!-- card -->
+
+
+
+</body>
+
+</html>

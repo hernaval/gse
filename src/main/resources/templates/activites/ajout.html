@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
+<head>
+<meta charset="utf-8" />
+<title>Activites_ajout</title>
+<th:block th:include="fragments/head :: head"></th:block>
+<th:block th:include="activites/testJs :: validation"></th:block>
+<th:block th:include="directions/directionJs :: init"></th:block>
+<th:block th:include="/layoutJs :: statInit"></th:block>
+<style>
+/*td:nth-child(4){
+		width : 30%;
+	}*/
+td {
+	font-size: 13px;
+}
+
+td:nth-child(1) {
+	width: 7%;
+}
+</style>
+</head>
+<body>
+	
+	<div class="card " layout:fragment="content">
+		<div  class="ctrl" th:if="${addSuccess}">
+			<span th:text="${addSuccess}" class="notification animateOpen"></span>
+		</div>
+		
+		<div  class="alert alert-success m-1 text-center" th:if="${session.addSuccess}" th:text="${session.addSuccess}"></div>
+		  <h3 class="text-danger text-center mb-2 p-2 addPanel">Nouvel activité</h3>
+
+		<div class="separator"></div>
+		
+		<div class="container mt-2">
+			<form method="post" th:action="@{activites/ajout}">
+			<div class="row">
+
+				<div class="col-lg-6">
+
+					<div class="form-group">
+						<label class="control-label">Référence</label> <input
+							id="reference" class="form-control-sm" type="text"
+							name="code_act" /> <small id="ref_err" class="text-danger"></small>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label">Description</label>
+						<textarea class="form-control" name="object_act"></textarea>
+					</div>
+
+					<div class="form-group">
+						Type de Demande <select class="form-control" name="type_dmd">
+							<option value="requête">Requête</option>
+							<option value="chantier">Chantier</option>
+							<option value="project">Projet</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						Caractéristique <select class="form-control" name="caract_act">
+							<option value="nouveau">Nouveau</option>
+							<option value="modif">Modif</option>
+							<option value="repetitif">Répétitif</option>
+						</select>
+					</div>
+
+					<div id="selectDir" class="form-group">
+						<!-- initialiser depuis la base avec ajax(js/directions/init.js) -->
+					</div>
+
+				</div>
+				<!-- lg 6 -->
+
+				<div class="col-lg-6">
+					<div class="form-group">
+						<label class="control-label">Date de Livraison</label> <input
+							class="form-control-sm" id="date_liv_act" type="date"
+							name="data_liv_act" /> <span class="text-danger" id="date_err"></span>
+					</div>
+
+
+
+					<div class="form-group">
+						<label class="control-label">Observation</label>
+						<textarea class="form-control" name="obs_act"></textarea>
+					</div>
+
+					<!-- <div class="form-group">
+						<label class="control-label">Responsable</label> <input
+							class="form-control" name="responsable" />
+					</div> -->
+					
+					<div class="ml-auto">
+						<input class="sendBtn  mr-3" type="submit" value="ajouter" />
+					</div>		
+					
+					
+				</div>
+				<!-- lg 6-->
+				
+			</div>
+			<!-- row  -->
+
+
+
+				
+
+			</form>
+		</div>
+		<!-- container -->
+
+
+
+
+
+	</div>
+	<!-- card -->
+
+	
+</body>
+</html>

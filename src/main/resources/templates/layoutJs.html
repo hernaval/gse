@@ -1,0 +1,160 @@
+
+<head>
+<meta charset="utf-8">
+</head>
+
+<div th:fragment="statInit">
+	<script>
+	/**
+	 * 
+	 */
+	$(document).ready(function(){
+		
+		countAct()
+		countInc()
+		countDim()
+		today()
+		setActiveLink()
+		
+		//animatedInput()
+		chatBot()
+		console.log("sqdf")
+
+		$('#scroll-top').hide()
+
+		$(window).scroll(()=>{
+			appear()
+		})
+
+		$('#scroll-top').click(function(){
+			scrollingTop()
+		})
+		//modal de deconnexion
+		$('#btnLogout').click(()=>{
+			
+			$('#logoutModal').modal("show")
+		})
+		$('#logout-log').addClass("hidden")
+		$('#logoutBtn').click(()=>{
+			$('#logout-log').removeClass("hidden")
+			setTimeout(function(){
+				window.location.href = "[[@{/logout}]]"
+			},1300)
+		})
+	})
+	function animatedInput(){
+		const input = document.getElementById("objet")
+		const searchBtn = document.getElementById("search-btn")
+
+		const expand = () =>{
+			
+			searchBtn.classList.toggle("close")
+			input.classList.toggle("square")
+		}
+		searchBtn.addEventListener("click",expand)
+	}
+	function chatBot(){
+		$('.chat-container').hide()
+	        bool = false
+	          $('#chat-box').click(()=>{
+
+	              bool = ! bool
+				  $('#chat-box').toggleClass("pulse")
+				  
+				  $('#chat-box').toggleClass("hideChat")
+	              $('#chat-box').children().toggleClass("fa fa-envelope fa-2x")
+	              $('#chat-box').children().toggleClass("fa fa-times  ")
+	              if(bool == false){
+	                $('#chat-box').animate({bottom : 100})
+	                $('.chat-container').hide()
+	              }else{
+	                $('#chat-box').animate({
+	                bottom  : 50
+	                })
+	                $('.chat-container').show()
+	              }
+	              
+	             
+	     })
+	}
+
+	function setActiveLink(){
+		var loc = window.location.pathname
+		
+		var name = loc.replace("/gse/ajout","")
+		var temp = name.replace(name.charAt(0),"")
+		var loc2 = "/gse/"
+		name = name.charAt(0).toLowerCase() + temp
+	 	loc2 = loc2 + name 
+		
+		$('.siderbar-link ').find("a").each(function(){
+			
+			if($(this).attr('href')==loc || $(this).attr("href") == loc2  ){
+				$(this).css("background",'rgba(19, 18, 18, 0.904)')
+				$(this).css("color",'white')
+				$(this).css("border-radius",'3px')
+				$(this).css("box-shadow",'1px 0px 3px  rgb(0, 0, 0,0.7)')
+			}
+		})
+		
+			
+	}
+
+	function countAct(){
+		
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/activites/count}]]",
+			dataType : "json",
+			contentType : "application/json",
+			success : function(data){
+				$('#countAct').html(data)
+			}
+		})
+	}
+	function countInc(){
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/incidents/count}]]",
+			dataType : "json",
+			contentType : "application/json",
+			success : function(data){
+				$('#countInc').html(data)
+			}
+		})
+	}
+
+	function countDim(){
+		$.ajax({
+			method : "get",
+			url : "[[@{/gse/dims/count}]]",
+			dataType : "json",
+			contentType : "application/json",
+			success : function(data){
+				$('#countDim').html(data)
+			}
+		})
+	}
+
+	function today(){
+		var months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre']
+		var d = new Date()
+		month = d.getMonth()
+		today = d.getDate()
+		$("#day").html(today)
+		$('#month').html(months[month])
+	}
+	function appear(){
+		if($(window).scrollTop() > 75){
+			$('#scroll-top').fadeIn(300)
+		}else{
+			$('#scroll-top').fadeOut(300)
+		}
+	}
+	function scrollingTop(){
+		$('html,body').animate({scrollTop:0})
+	}
+
+
+	</script>
+</div>
